@@ -12,7 +12,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     const pool = new Pool({
       host: 'localhost',
       port: 5432,
-      database: 'mux_mails',
+      database: 'mail_man',
     });
 
     this.db = new Kysely<Database>({

@@ -15,8 +15,9 @@ export class ProjectService implements OnModuleInit {
     this.db = this.dbService.getDb();
   }
 
-  createProject = async (body: CreateProjectDto) => {
+  createProject = async (body: CreateProjectDto, owner_id?: string) => {
     const { description, name } = body;
+
     // create the project for the user
     const project = await this.db
       .insertInto('projects')
@@ -24,6 +25,7 @@ export class ProjectService implements OnModuleInit {
         id: generateUlid(),
         name,
         description,
+        owner_id,
       })
       .returningAll()
       .execute();
@@ -32,12 +34,24 @@ export class ProjectService implements OnModuleInit {
   };
 
   getProjectById = async (id: string) => {
-    
+    return this.db
+      .selectFrom('projects')
+      .where('id', '=', id)
+      .selectAll()
+      .executeTakeFirst();
   };
 
-  getCreatedProjects = (offset: Number = 0, limit: Number = 10) => {
-    console.log('Offset', offset);
-    console.log('Limit', limit);
-    return 'Hitting the projects routes';
+  getCreatedProjects = async (
+    owner_id: string,
+    offset: number = 0,
+    limit: number = 10,
+  ) => {
+    return await this.db
+      .selectFrom('projects')
+      .where('owner_id', '=', owner_id)
+      .selectAll()
+      .limit(limit)
+      .offset(offset)
+      .execute();
   };
 }

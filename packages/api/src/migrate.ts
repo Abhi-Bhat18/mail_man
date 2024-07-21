@@ -14,7 +14,7 @@ async function migrateToLatest() {
     dialect: new PostgresDialect({
       pool: new Pool({
         host: 'localhost',
-        database: 'mux_mails',
+        database: 'mail_man',
       }),
     }),
   })

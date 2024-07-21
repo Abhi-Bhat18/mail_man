@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { CommandFactory } from 'nest-commander';
+import { RoleModule } from './modules/role/role.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

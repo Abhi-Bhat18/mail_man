@@ -14,6 +14,14 @@ export class UserService implements OnModuleInit {
     this.db = this.dbService.getDb();
   }
 
+  findById = async (id: string) => {
+    return await this.db
+      .selectFrom('users')
+      .where('id', '=', id)
+      .selectAll()
+      .executeTakeFirst();
+  };
+
   findByEmail = async (email: string) => {
     return await this.db
       .selectFrom('users')
@@ -23,7 +31,7 @@ export class UserService implements OnModuleInit {
   };
 
   createUser = async (user: NewUser) => {
-    return this.db
+    return await this.db
       .insertInto('users')
       .values(user)
       .returningAll()
@@ -31,17 +39,17 @@ export class UserService implements OnModuleInit {
   };
 
   updateRefreshToken = async (id: string, refreshToken: string) => {
-    return this.db
+    return await this.db
       .updateTable('users')
       .set({
         refresh_token: refreshToken,
       })
       .where('id', '=', id)
       .executeTakeFirst();
-};
+  };
 
   deleteRefreshToken = async (id: string) => {
-    return this.db
+    return await this.db
       .updateTable('users')
       .set({ refresh_token: null })
       .where('id', '=', id)

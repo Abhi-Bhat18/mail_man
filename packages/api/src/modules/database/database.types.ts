@@ -8,6 +8,6 @@ export interface Database {
   users: UserTable;
   projects: ProjectTable;
   roles: RoleTable;
-  project_acceess: ProjectAccess;
+  project_accesses: ProjectAccess;
   api_keyes: ApiKeyTable;
 }

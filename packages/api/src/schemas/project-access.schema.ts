@@ -5,7 +5,7 @@ export interface ProjectAccessTable {
   project_id: string;
   user_id: string;
   role_id: number;
-  granted_by: number;
+  granted_by: string;
   granted_at: ColumnType<Date, string | undefined, never>;
 }
 
