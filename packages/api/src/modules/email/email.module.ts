@@ -8,6 +8,7 @@ import { EmailConsumer } from './email.processor';
 @Module({
   imports: [DatabaseModule, BullModule.registerQueue({ name: 'email' })],
   controllers: [EmailController],
-  providers: [EmailService,EmailConsumer],
+  providers: [EmailService, EmailConsumer],
 })
+
 export class EmailModule {}
