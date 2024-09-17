@@ -1,7 +1,8 @@
-import { Get, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
+import roles from './role.seed';
 
 @Injectable()
 export class RoleService implements OnModuleInit {
@@ -14,24 +15,11 @@ export class RoleService implements OnModuleInit {
   }
 
   async seed() {
-    const roles = [
-      {
-        name: 'owner',
-        description: 'Full access and control over the project',
-      },
-      {
-        name: 'admin',
-        description: 'Administrative access with high-level permissions',
-      },
-      { name: 'manager', description: 'Manage projects and teams' },
-      { name: 'analyst', description: 'Access to data and analytics' },
-    ];
-
     for (const role of roles) {
       await this.createRoleIfNotExists(role);
     }
 
-    return 'Roles seeded successfully'
+    return 'Roles seeded successfully';
   }
 
   private async createRoleIfNotExists(role: {

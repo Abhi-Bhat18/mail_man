@@ -8,5 +8,4 @@ const roles = [
   { name: 'analyst', description: 'Access to data and analytics' },
 ];
 
-
 export default roles;

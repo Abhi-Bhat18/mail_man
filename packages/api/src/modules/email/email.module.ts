@@ -10,5 +10,4 @@ import { EmailConsumer } from './email.processor';
   controllers: [EmailController],
   providers: [EmailService, EmailConsumer],
 })
-
 export class EmailModule {}

@@ -1,7 +1,15 @@
-import { Controller, Get, Res , Req, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Res,
+  Req,
+  Post,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { EmailService } from './email.service';
 import { EmailDto } from './dto/email.dto';
-import { Response , Request} from 'express';
+import { Response, Request } from 'express';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('email')
@@ -16,14 +24,15 @@ export class EmailController {
   }
 
   @Post()
-  async sendEmail (@Body() body : EmailDto,  @Req() req : Request, @Res() res : Response  ) { 
+  async sendEmail(
+    @Body() body: EmailDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const { to, subject, content, html } = body;
 
-    const { to,subject , content , html } = body;
+    const info = await this.emailService.sendEmail(to, subject, content, html);
 
-
-    const info = await this.emailService.sendEmail(to, subject, content, html)
-
-    res.json({ info : info})
-
+    res.json({ info: info });
   }
 }

@@ -23,14 +23,16 @@ export class ProjectAccessService implements OnModuleInit {
       .executeTakeFirst();
   };
 
-  createProjectAccess = async ( body : CreateProjectAccessDto
-  , granted_by : string) => {
-    return await this.db.insertInto('project_accesses').values({
-      id : generateUlid(),
-      project_id : body.projectId,
-      role_id : body.roleId,
-      user_id : body.userId,
-      granted_by : granted_by
-    }).returningAll().executeTakeFirst()
+  createProjectAccess = async (body: CreateProjectAccessDto) => {
+    return await this.db
+      .insertInto('project_accesses')
+      .values({
+        id: generateUlid(),
+        project_id: body.projectId,
+        role_id: body.roleId,
+        user_id: body.userId,
+      })
+      .returningAll()
+      .executeTakeFirst();
   };
 }

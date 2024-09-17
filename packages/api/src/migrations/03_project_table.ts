@@ -5,6 +5,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .createTable('projects')
     .addColumn('id', 'varchar', (col) => col.primaryKey())
     .addColumn('name', 'varchar', (col) => col.notNull())
+    .addColumn('description', 'varchar', (col) => col.notNull())
     .addColumn('owner_id', 'varchar', (col) => col.notNull())
     .addColumn('updated_at', 'timestamp', (col) =>
       col.defaultTo(sql`now()`).notNull(),
@@ -14,7 +15,11 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     )
     .execute();
 
-  await db.schema.createIndex('ower_index').on('projects').column('owner_id').execute();
+  await db.schema
+    .createIndex('ower_index')
+    .on('projects')
+    .column('owner_id')
+    .execute();
 };
 
 export const down = async (db: Kysely<any>) => {

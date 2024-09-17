@@ -7,8 +7,9 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .addColumn('project_id', 'varchar', (col) => col.notNull())
     .addColumn('user_id', 'varchar', (col) => col.notNull())
     .addColumn('role_id', 'varchar', (col) => col.notNull())
-    .addColumn('grated_by', 'varchar', (col) => col.notNull())
-    .addColumn('grated_at', 'timestamp', (col) => col.defaultTo(sql`now()`))
+    .addColumn('created_at', 'timestamp', (col) =>
+      col.defaultTo(sql`now()`).notNull(),
+    )
     .execute();
 };
 

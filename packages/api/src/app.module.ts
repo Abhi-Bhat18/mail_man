@@ -28,19 +28,17 @@ import { RoleModule } from './modules/role/role.module';
         port: 6379,
       },
     }),
-
     DatabaseModule,
     AuthModule,
     UserModule,
     ProjectModule,
     EmailModule,
     ApiModule,
-    RoleModule
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('auth');

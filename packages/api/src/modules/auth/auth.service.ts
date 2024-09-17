@@ -1,14 +1,11 @@
 import {
   ConflictException,
-  ConsoleLogger,
   HttpException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DatabaseService } from 'src/modules/database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { UserService } from '../user/user.service';
@@ -84,9 +81,9 @@ export class AuthServices {
     return await this.userService.findByEmail(email);
   };
 
-  signOut = async ( id : string ) => { 
-    return await this.userService.deleteRefreshToken(id)
-  }
+  signOut = async (id: string) => {
+    return await this.userService.deleteRefreshToken(id);
+  };
 
   generateJwt = async (payload: object, expiry: string = '15min') => {
     return await this.jwtService.signAsync(payload);

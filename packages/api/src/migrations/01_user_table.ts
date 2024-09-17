@@ -1,4 +1,4 @@
-import { Kysely, sql } from 'kysely'
+import { Kysely, sql } from 'kysely';
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
@@ -12,17 +12,17 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('google_access_token', 'varchar')
     .addColumn('google_refresh_token', 'varchar')
     .addColumn('created_at', 'timestamp', (col) =>
-      col.defaultTo(sql`now()`).notNull()
+      col.defaultTo(sql`now()`).notNull(),
     )
-    .execute()
+    .execute();
 
   await db.schema
     .createIndex('email_index')
     .on('users')
     .column('email')
-    .execute()
+    .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable('users').execute()
+  await db.schema.dropTable('users').execute();
 }

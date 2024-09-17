@@ -7,5 +7,8 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": { 
+    "start:dev" : "cd ./packages/api && yarn start:dev"
+  },
   "dependencies": {}
 }

@@ -48,10 +48,10 @@ export class EmailService {
     };
 
     try {
-      const job = await this.emailQueue.add('email', { 
-        mailOptions
+      const job = await this.emailQueue.add('email', {
+        mailOptions,
       });
-      return { success : true  , message : "Email queued successfully"};
+      return { success: true, message: 'Email queued successfully' };
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;

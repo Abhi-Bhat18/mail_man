@@ -5,8 +5,7 @@ export interface ProjectAccessTable {
   project_id: string;
   user_id: string;
   role_id: number;
-  granted_by: string;
-  granted_at: ColumnType<Date, string | undefined, never>;
+  created_at: ColumnType<Date, string | undefined, never>;
 }
 
 export type ProjectAccess = Selectable<ProjectAccessTable>;

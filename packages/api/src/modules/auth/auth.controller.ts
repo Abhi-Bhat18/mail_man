@@ -55,17 +55,18 @@ export class AuthController {
   @Get('check')
   @UseGuards(AuthGuard)
   async checkLogin(@Req() req: Request) {
-    return await this.authService.checkLogin(req.user.email)
+    return await this.authService.checkLogin(req.user.email);
   }
 
   @Get('sign-out')
   @UseGuards(AuthGuard)
-  async signout( @Req() req : Request , @Res() res : Response ) { 
+  async signout(@Req() req: Request, @Res() res: Response) {
+    await this.authService.signOut(req.user.id);
 
-   await this.authService.signOut(req.user.id)
-    
-   res.clearCookie('token');
+    res.clearCookie('token');
 
-   return res.status(HttpStatus.OK).send({ 'message' : "Logged out successfully"});
+    return res
+      .status(HttpStatus.OK)
+      .send({ message: 'Logged out successfully' });
   }
 }

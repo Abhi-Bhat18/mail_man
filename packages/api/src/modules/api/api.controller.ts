@@ -4,7 +4,6 @@ import {
   Post,
   UseGuards,
   Req,
-  Res,
   Param,
   HttpException,
   HttpStatus,
@@ -12,7 +11,7 @@ import {
 import { ApiService } from './api.services';
 import { AuthGuard } from '../auth/auth.guard';
 import { ProjectService } from '../project/project.service';
-import { Request } from 'express'
+import { Request } from 'express';
 
 @Controller('api')
 @UseGuards(AuthGuard)
@@ -26,7 +25,7 @@ export class ApiController {
   async getProjectApiKey() {}
 
   @Post('project/:id')
-  async generateApiKey(@Param() id: string , @Req() req : Request) {
+  async generateApiKey(@Param() id: string, @Req() req: Request) {
     // check wether the project exists or user have access to the project
     const project = await this.projectService.getProjectById(id);
 
@@ -36,16 +35,11 @@ export class ApiController {
         HttpStatus.NOT_FOUND,
       );
 
-    if(project.owner_id === req.user.id) { 
-        // generate the api key and send it 
-
+    if (project.owner_id === req.user.id) {
+      // generate the api key and send it
     }
 
-    // check wether the use has the project access 
+    // check wether the use has the project access
     // const projectAccess = await this.proje
-
-
-
   }
-
 }

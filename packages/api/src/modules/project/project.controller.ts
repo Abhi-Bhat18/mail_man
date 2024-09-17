@@ -73,9 +73,7 @@ export class ProjectController {
   }
 
   @Get('/access/:id')
-  async getProjectACcess(@Param() id : string) {
-
-  }
+  async getProjectACcess(@Param() id: string) {}
 
   @Post('/access')
   async giveProjectAccess(
@@ -87,7 +85,8 @@ export class ProjectController {
     if (!project)
       throw new HttpException('Project Not found', HttpStatus.NOT_FOUND);
 
-    if(project.owner_id === body.projectId) throw new HttpException("Invalid Request", HttpStatus.BAD_REQUEST);
+    if (project.owner_id === body.projectId)
+      throw new HttpException('Invalid Request', HttpStatus.BAD_REQUEST);
 
     const user = await this.userService.findById(body.userId);
 
@@ -107,9 +106,6 @@ export class ProjectController {
         HttpStatus.CONFLICT,
       );
 
-    return await this.projectAccessService.createProjectAccess(
-      body,
-      req.user.id,
-    );
+    return await this.projectAccessService.createProjectAccess(body);
   }
 }

@@ -3,6 +3,7 @@ import { DatabaseService } from 'src/modules/database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { NewUser } from 'src/schemas/user.schema';
+import { generateUlid } from 'src/utils/generators';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -13,6 +14,8 @@ export class UserService implements OnModuleInit {
   onModuleInit() {
     this.db = this.dbService.getDb();
   }
+
+  async seed() {}
 
   findById = async (id: string) => {
     return await this.db
@@ -55,4 +58,9 @@ export class UserService implements OnModuleInit {
       .where('id', '=', id)
       .executeTakeFirst();
   };
+
+  private async createSuperAdminIfNotExist(role: {
+    name: string;
+    description: string;
+  }): Promise<void> {}
 }
