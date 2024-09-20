@@ -1,6 +1,7 @@
 import { Button } from "../ui/button";
 import NavLink from "./NavLink";
 import { navigations } from "@/utils/config";
+import { ToggleTheme } from "./ToggleTheme";
 
 const DeskNav = () => {
   return <div className="hidden lg:flex items-center justify-between max-w-[1400px] mx-auto py-4">
@@ -15,7 +16,8 @@ const DeskNav = () => {
       ))}
       </ul>
     </div>
-    <div className="space-x-5">
+    <div className="space-x-5 items-center">
+      <ToggleTheme />
       <Button>
         Demo
       </Button>

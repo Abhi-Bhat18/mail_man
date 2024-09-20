@@ -5,15 +5,15 @@ const Hero = () => {
     return (
         <div className='flex h-[60vh] items-center'>
             <div className='basis-1/2 space-y-5'>
-                <p className='text-7xl'>Power Your Email Marketing</p>
+                <h5 className='text-7xl font-semibold'>Power Your Email Marketing</h5>
                 <p>Discover the ultimate open source solution for seamless email sending and powerful marketing campaigns.</p>
                 <div className='flex space-x-5'>
-                    <Button>
+                    <button>
                         Get Started
-                    </Button>
-                    <Button>
+                    </button>
+                    <button>
                         Learn More
-                    </Button>
+                    </button>
                 </div>
             </div>
             <div className='basis-1/2'>

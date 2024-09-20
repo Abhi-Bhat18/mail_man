@@ -2,10 +2,13 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import '../global.css'
 
-import { Inter } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
+
 import Navbar from "@/components/navbar/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
+
+
 
 export const metadata: Metadata = {
   title: "Mail man",
@@ -20,15 +23,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${GeistSans.className}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
           <Navbar/>
           {children}
+
         </ThemeProvider>
       </body>
     </html>
