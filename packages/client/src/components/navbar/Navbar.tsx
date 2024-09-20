@@ -4,7 +4,7 @@ import { navigations } from "@/utils/config";
 import { ToggleTheme } from "./ToggleTheme";
 
 const DeskNav = () => {
-  return <div className="hidden lg:flex items-center justify-between max-w-[1400px] mx-auto py-4">
+  return <div className=" lg:flex items-center fixed flex top-0 w-full justify-between max-w-[1400px] mx-auto py-4 px-8 backdrop-blur-lg bg-transparent">
 
     <div className="flex space-x-20 items-center">
       <p className="font-bold">
@@ -16,14 +16,14 @@ const DeskNav = () => {
       ))}
       </ul>
     </div>
-    <div className="space-x-5 items-center">
+    <div className="space-x-5 flex items-center">
       <ToggleTheme />
-      <Button>
+      <button>
         Demo
-      </Button>
-      <Button>
+      </button>
+      <button>
         Sign up
-      </Button>
+      </button>
     </div>
 
   </div>

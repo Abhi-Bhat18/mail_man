@@ -23,8 +23,8 @@
       hsl(230, 14.46%, 62.55%) /* Lighter: Increase lightness */
     );
     --button-color: hsl(0, 0%, 100%);
-    --background: hsl(225, 28.57%, 97.25%);
-    --foreground: 0 0% 3.9%;
+    --background:225, 28.57%, 97.25%;
+    --foreground: hsl(230,14.46%,32.55%);
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
