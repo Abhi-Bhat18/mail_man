@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { DatabaseService } from 'src/modules/database/database.service';
+import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private userService: UserService) {}
 
   @Get()
   getUsers() {
-    return 'Hitting the user route';
+    return this.userService.getAllUsers();
   }
 }

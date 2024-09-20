@@ -1,17 +1,13 @@
 import { ColumnType, Insertable, Selectable, Updateable } from 'kysely';
 
-export interface EmailTable {
+export interface EmailTemplateTable {
   id: string;
-  user_id: string;
-  subject: string;
-  to_address: string;
-  text: string;
   html: string;
-  attachment_exists: boolean;
+  created_by: string;
   updated_at: ColumnType<Date, string, any>;
   created_at: ColumnType<Date, string | undefined, never>;
 }
 
-export type Email = Selectable<EmailTable>;
-export type NewEmail = Insertable<EmailTable>;
-export type EmailUpdate = Updateable<EmailTable>;
+export type Email = Selectable<EmailTemplateTable>;
+export type NewEmail = Insertable<EmailTemplateTable>;
+export type EmailUpdate = Updateable<EmailTemplateTable>;

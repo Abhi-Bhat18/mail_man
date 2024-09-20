@@ -1,9 +1,11 @@
+'use client'
+import { toast } from "sonner"
+import { Mail } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const Home = () => {
   return (
-    <main>
-      <p>This is the mail man home page</p>
-    </main>
+    <main></main>
   )
 }
 

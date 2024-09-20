@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeProvider } from "@/components/theme-provider";
 import '../global.css'
 
 import { Inter } from "next/font/google";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   description: "Mail main is a marketing tool",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,9 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-primary text-fontColor px-5`}>
-        <Navbar />
-        {children}
+      <body className={`${inter.className}`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar/>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

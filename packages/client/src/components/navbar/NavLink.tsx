@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 interface Props {
-  Icon: React.FC;
+  Icon?: React.FC;
   name: string;
   link: string;
 }

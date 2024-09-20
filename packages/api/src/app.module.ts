@@ -10,8 +10,11 @@ import configuration from './config/configuration';
 import { ProjectModule } from './modules/project/project.module';
 import { EmailModule } from './modules/email/email.module';
 import { BullModule } from '@nestjs/bullmq';
-import { ApiModule } from './modules/api/api.module';
+import { ApiModule } from './modules/api/api-key.module';
 import { RoleModule } from './modules/role/role.module';
+import { SeederModule } from './modules/seed/seed.module';
+import { CommandRunnerModule } from 'nest-commander';
+import { ProjectAccessModule } from './modules/project-access/projectAccess.module';
 
 @Module({
   // configuringing the env variables
@@ -29,18 +32,22 @@ import { RoleModule } from './modules/role/role.module';
       },
     }),
     DatabaseModule,
+    SeederModule,
     AuthModule,
     UserModule,
     ProjectModule,
+    ProjectAccessModule,
     EmailModule,
     ApiModule,
     RoleModule,
+    CommandRunnerModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('auth');
-  }
-}
+export class AppModule{};
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(LoggerMiddleware).forRoutes('auth');
+//   }
+// }

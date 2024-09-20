@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Theme } from "@radix-ui/themes";
-
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import '../global.css';
+import Sidebar  from '@/components/sidebar/Sidebar';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +21,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Theme accentColor="brown">{children}</Theme>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Sidebar/>
+          {children}
+          <Toaster/>
+        </ThemeProvider>
       </body>
     </html>
   );

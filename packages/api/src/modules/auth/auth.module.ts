@@ -4,7 +4,8 @@ import { AuthServices } from './auth.service';
 import { DatabaseModule } from 'src/modules/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
-import { UserService } from '../user/user.service';
+import { ProjectModule } from '../project/project.module';
+import { ProjectAccessModule } from '../project-access/projectAccess.module';
 
 @Module({
   imports: [
@@ -15,8 +16,10 @@ import { UserService } from '../user/user.service';
       signOptions: { expiresIn: '15min' },
     }),
     UserModule,
+    ProjectModule, 
+    ProjectAccessModule,
   ],
   controllers: [AuthController],
-  providers: [AuthServices, UserService],
+  providers: [AuthServices],
 })
 export class AuthModule {}

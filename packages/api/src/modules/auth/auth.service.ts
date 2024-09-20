@@ -1,6 +1,7 @@
 import {
   ConflictException,
   HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -31,7 +32,7 @@ export class AuthServices {
     // check account already exists or not
     const userExists = await this.userService.findByEmail(email);
 
-    if (userExists) throw new ConflictException();
+    if (userExists) throw new HttpException('Account already exist with this email', HttpStatus.CONFLICT);
 
     const hashedPassword = await bcrypt.hash(
       password,
@@ -85,7 +86,7 @@ export class AuthServices {
     return await this.userService.deleteRefreshToken(id);
   };
 
-  generateJwt = async (payload: object, expiry: string = '15min') => {
+  private generateJwt = async (payload: object, expiry: string = '15min') => {
     return await this.jwtService.signAsync(payload);
   };
 }

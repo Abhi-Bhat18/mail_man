@@ -11,11 +11,4 @@ export class RoleController {
   async getAllRoles() {
     return await this.roleService.getAllRoles();
   }
-
-  @Post()
-  async createRoles() {
-    console.log('Hitting the route');
-
-    return await this.roleService.seed();
-  }
 }

@@ -29,7 +29,7 @@ export class UserService implements OnModuleInit {
     return await this.db
       .selectFrom('users')
       .where('email', '=', email)
-      .selectAll()
+      .select(['email', 'first_name', 'last_name', 'id', 'password'])
       .executeTakeFirst();
   };
 
@@ -41,6 +41,9 @@ export class UserService implements OnModuleInit {
       .executeTakeFirst();
   };
 
+  getAllUsers = async () => { 
+    return await this.db.selectFrom('users').selectAll().execute();
+  }
   updateRefreshToken = async (id: string, refreshToken: string) => {
     return await this.db
       .updateTable('users')
@@ -59,8 +62,5 @@ export class UserService implements OnModuleInit {
       .executeTakeFirst();
   };
 
-  private async createSuperAdminIfNotExist(role: {
-    name: string;
-    description: string;
-  }): Promise<void> {}
+
 }
