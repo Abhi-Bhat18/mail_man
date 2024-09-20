@@ -15,9 +15,9 @@ async function migrateToLatest() {
       pool: new Pool({
         host: 'localhost',
         database: 'mail_man',
-        port : 5432,
-        user : 'abhishek',
-        password : 'abhi'
+        port: 5432,
+        user: 'abhishek',
+        password: 'abhi',
       }),
     }),
   });

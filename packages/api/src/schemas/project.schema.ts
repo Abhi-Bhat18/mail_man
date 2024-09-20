@@ -5,7 +5,7 @@ export interface ProjectTable {
   name: string;
   description: string;
   owner_id: string;
-  status : 'active' | 'in-active' | 'deleted';
+  status: 'active' | 'in-active' | 'deleted';
   created_at: ColumnType<Date, string | undefined, never>;
   updated_at: ColumnType<Date, string | undefined, string>;
 }

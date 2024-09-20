@@ -41,9 +41,9 @@ export class UserService implements OnModuleInit {
       .executeTakeFirst();
   };
 
-  getAllUsers = async () => { 
+  getAllUsers = async () => {
     return await this.db.selectFrom('users').selectAll().execute();
-  }
+  };
   updateRefreshToken = async (id: string, refreshToken: string) => {
     return await this.db
       .updateTable('users')
@@ -61,6 +61,4 @@ export class UserService implements OnModuleInit {
       .where('id', '=', id)
       .executeTakeFirst();
   };
-
-
 }

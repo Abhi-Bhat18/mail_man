@@ -27,7 +27,7 @@ export class ProjectController {
     jwtService: JwtService,
     private readonly projectService: ProjectService,
     private readonly projectAccessService: ProjectAccessService,
-  ) { }
+  ) {}
 
   @Get()
   async getProjects(@Req() req: Request) {
@@ -47,38 +47,55 @@ export class ProjectController {
     if (project.owner_id == req.user.id) return project;
 
     // check for project access
-    const projectAccess = await this.projectAccessService.getUserProjectAccess(project.id, req.user.id);
+    const projectAccess = await this.projectAccessService.getUserProjectAccess(
+      project.id,
+      req.user.id,
+    );
 
-    if (!projectAccess) throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
+    if (!projectAccess)
+      throw new HttpException('Unauthorized access', HttpStatus.UNAUTHORIZED);
 
     return project;
   }
 
   @Post('invite')
-  async inviteUserThroughEmail(@Body() body: ProjectInviteDto, @Req() req: Request) {
-
-    const { project_id, role_id ,email } = body;
+  async inviteUserThroughEmail(
+    @Body() body: ProjectInviteDto,
+    @Req() req: Request,
+  ) {
+    const { project_id, role_id, email } = body;
 
     const project = await this.projectService.getProjectById(project_id);
 
-    if (!project) throw new HttpException('Project Not found', HttpStatus.NOT_FOUND);
+    if (!project)
+      throw new HttpException('Project Not found', HttpStatus.NOT_FOUND);
 
     let canInvite;
     if (project.owner_id == req.user.id) canInvite = true;
 
-    // look for project access 
+    // look for project access
     if (!canInvite) {
-      const projectAccess = await this.projectAccessService.getUserProjectAccess(project.id, req.user.id);
+      const projectAccess =
+        await this.projectAccessService.getUserProjectAccess(
+          project.id,
+          req.user.id,
+        );
 
-      if (!projectAccess) throw new HttpException('Unauthorized access', HttpStatus.NOT_FOUND);
-      console.log("Project Access", projectAccess);
+      if (!projectAccess)
+        throw new HttpException('Unauthorized access', HttpStatus.NOT_FOUND);
+      console.log('Project Access', projectAccess);
     }
 
-    if (!canInvite) throw new HttpException('Unauthorized Access', HttpStatus.UNAUTHORIZED);
+    if (!canInvite)
+      throw new HttpException('Unauthorized Access', HttpStatus.UNAUTHORIZED);
 
-    // send email through the link 
+    // send email through the link
 
-    const invitationToken = await this.projectService.generateInviteToken(project.id, role_id,email);
+    const invitationToken = await this.projectService.generateInviteToken(
+      project.id,
+      role_id,
+      email,
+    );
 
     return { invitationToken };
   }

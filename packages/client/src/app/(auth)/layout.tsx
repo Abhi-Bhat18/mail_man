@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/sonner";
 import '../global.css';
 import Sidebar  from '@/components/sidebar/Sidebar';
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

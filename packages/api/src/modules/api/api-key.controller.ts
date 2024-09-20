@@ -22,13 +22,11 @@ export class ApiController {
   constructor(
     private readonly apiService: ApiService,
     private readonly projectService: ProjectService,
-    private readonly projectAccessService : ProjectAccessService
+    private readonly projectAccessService: ProjectAccessService,
   ) {}
 
   @Get()
-  async getProjectApiKey() {
-
-  }
+  async getProjectApiKey() {}
 
   @Post('')
   async generateApiKey(@Param() id: string, @Req() req: Request) {
@@ -40,30 +38,40 @@ export class ApiController {
         'Unable to find the project',
         HttpStatus.NOT_FOUND,
       );
-    
+
     let canGenerateAPIKey;
 
     if (project.owner_id === req.user.id) {
       canGenerateAPIKey = true;
     }
-    
-    
-    if(!canGenerateAPIKey) { 
-      const projectAccess = await this.projectAccessService.getUserProjectAccess(project.id, req.user.id);
 
-      if(projectAccess && projectAccess.role_id > 2) { 
-        canGenerateAPIKey = true
+    if (!canGenerateAPIKey) {
+      const projectAccess =
+        await this.projectAccessService.getUserProjectAccess(
+          project.id,
+          req.user.id,
+        );
+
+      if (projectAccess && projectAccess.role_id > 2) {
+        canGenerateAPIKey = true;
       }
     }
 
-    if(!canGenerateAPIKey) throw new HttpException('Not have enough permission', HttpStatus.UNAUTHORIZED);  
+    if (!canGenerateAPIKey)
+      throw new HttpException(
+        'Not have enough permission',
+        HttpStatus.UNAUTHORIZED,
+      );
 
-    const apiKey = this.apiService.generateAndInsertAPIKey(req.user.id, project.id);
+    const apiKey = this.apiService.generateAndInsertAPIKey(
+      req.user.id,
+      project.id,
+    );
     return apiKey;
   }
 
-//   @Put('')
-//   async invokeAPIKey(@Body() body : ) { 
+  //   @Put('')
+  //   async invokeAPIKey(@Body() body : ) {
 
-//   }
+  //   }
 }

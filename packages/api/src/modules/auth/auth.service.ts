@@ -32,7 +32,11 @@ export class AuthServices {
     // check account already exists or not
     const userExists = await this.userService.findByEmail(email);
 
-    if (userExists) throw new HttpException('Account already exist with this email', HttpStatus.CONFLICT);
+    if (userExists)
+      throw new HttpException(
+        'Account already exist with this email',
+        HttpStatus.CONFLICT,
+      );
 
     const hashedPassword = await bcrypt.hash(
       password,

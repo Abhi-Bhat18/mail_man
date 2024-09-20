@@ -40,12 +40,12 @@ import { ProjectAccessModule } from './modules/project-access/projectAccess.modu
     EmailModule,
     ApiModule,
     RoleModule,
-    CommandRunnerModule
+    CommandRunnerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule{};
+export class AppModule {}
 // export class AppModule implements NestModule {
 //   configure(consumer: MiddlewareConsumer) {
 //     consumer.apply(LoggerMiddleware).forRoutes('auth');

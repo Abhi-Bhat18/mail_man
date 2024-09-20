@@ -9,6 +9,6 @@ import { ProjectAccessModule } from '../project-access/projectAccess.module';
   imports: [DatabaseModule, UserModule, ProjectAccessModule],
   controllers: [ProjectController],
   providers: [ProjectService],
-  exports : [ ProjectService ]
+  exports: [ProjectService],
 })
 export class ProjectModule {}
