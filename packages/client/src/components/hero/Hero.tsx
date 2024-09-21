@@ -12,8 +12,12 @@ const Hero = () => {
           and powerful marketing campaigns.
         </p>
         <div className="flex space-x-5">
-          <button>Get Started</button>
-          <button>Learn More</button>
+          <Button>
+            Get started
+          </Button>
+          <Button variant={"outline"} >
+            Learn more
+          </Button>
         </div>
       </div>
       <div className="basis-1/2 flex justify-center items-center">

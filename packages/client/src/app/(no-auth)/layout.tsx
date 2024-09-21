@@ -6,10 +6,6 @@ import { GeistSans } from 'geist/font/sans';
 
 import Navbar from "@/components/navbar/Navbar";
 
-// const inter = Inter({ subsets: ["latin"] });
-
-
-
 export const metadata: Metadata = {
   title: "Mail man",
   description: "Mail main is a marketing tool",
