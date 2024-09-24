@@ -3,8 +3,8 @@ import { IconBrandCampaignmonitor, IconHome ,IconTemplate, IconCapProjecting} fr
 
 export const navigations = [
   {
-    name: "Home",
-    link: "/",
+    name: "home",
+    link: "/home",
     Icon: HomeIcon,
   },
   { 
@@ -17,7 +17,7 @@ export const navigations = [
 export const sidebarNavigations = [ 
   { 
     name : "Home",
-    link : '/',
+    link : '/home',
     Icon : IconHome,
   },
   { 

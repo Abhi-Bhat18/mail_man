@@ -16,6 +16,8 @@ export function ToggleTheme() {
   const { setTheme } = useTheme()
 
   return (
+    <div>
+
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex items-center">
@@ -24,7 +26,7 @@ export function ToggleTheme() {
           <span className="sr-only">Toggle theme</span>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>
@@ -36,5 +38,6 @@ export function ToggleTheme() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  </div>
   )
 }

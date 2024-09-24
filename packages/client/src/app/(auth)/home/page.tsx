@@ -1,11 +1,13 @@
 'use client'
-import { toast } from "sonner"
-import { Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Recents from "./recents"
 
 const Home = () => {
   return (
-    <main></main>
+    <section className="min-h-[100vh] p-5 space-y-5">
+      <h2>Good Morning</h2>
+      <Recents />
+    </section>
   )
 }
 

@@ -1,16 +1,18 @@
 import React from "react";
 import Link from "next/link";
-import { IconProps } from "@tabler/icons-react";
 
 interface Props {
   name: string;
   link: string;
-  Icon: React.ForwardRefExoticComponent<IconProps>;
+  Icon: React.ComponentType<any>;
+  currentPath: string;
 }
-const SidebarLink: React.FC<Props> = ({ name, link, Icon }) => {
+
+const SidebarLink: React.FC<Props> = ({ name, link, Icon, currentPath }) => {
+
   return (
-    <Link href={link} className="flex space-x-5 bg-secondary">
-      <Icon/>
+    <Link href={link} className={`flex space-x-5 hover:bg-secondary p-2 rounded-md ${currentPath == link ? 'bg-secondary' : ''}`}>
+      <Icon />
       <p>{name}</p>
     </Link>
   );
