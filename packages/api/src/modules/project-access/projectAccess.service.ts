@@ -9,7 +9,7 @@ import { userInfo } from 'os';
 @Injectable()
 export class ProjectAccessService implements OnModuleInit {
   private db: Kysely<Database>;
-  constructor(private readonly dbService: DatabaseService) { }
+  constructor(private readonly dbService: DatabaseService) {}
 
   onModuleInit() {
     this.db = this.dbService.getDb();
@@ -26,12 +26,13 @@ export class ProjectAccessService implements OnModuleInit {
   };
 
   getProjectAccessOfUser = async (user_id: string) => {
-    return await this.db.selectFrom('project_accesses')
-    .where('user_id', '=', user_id)
-    .innerJoin('roles','role_id','roles.id')
-    .selectAll()
-    .execute();
-  }
+    return await this.db
+      .selectFrom('project_accesses')
+      .where('user_id', '=', user_id)
+      .innerJoin('roles', 'role_id', 'roles.id')
+      .selectAll()
+      .execute();
+  };
 
   createProjectAccess = async (body: CreateProjectAccessDto) => {
     return await this.db

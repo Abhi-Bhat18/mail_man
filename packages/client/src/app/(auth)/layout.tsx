@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import '../global.css';
-import Sidebar  from '@/components/sidebar/Sidebar';
+import StoreProvider from "../StoreProvider";
+import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
 
-
-const inter = Inter({ subsets: ["latin"] });
+const openSans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Mail man",
@@ -20,17 +20,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Sidebar/>
-          {children}
-          <Toaster/>
-        </ThemeProvider>
+      <body className={openSans.className}>
+        <StoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="systemDefault"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthenticatedLayout>
+              {children}
+            </AuthenticatedLayout>
+            <Toaster />
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );

@@ -16,7 +16,7 @@ import { ProjectAccessModule } from '../project-access/projectAccess.module';
       signOptions: { expiresIn: '15min' },
     }),
     UserModule,
-    ProjectModule, 
+    ProjectModule,
     ProjectAccessModule,
   ],
   controllers: [AuthController],

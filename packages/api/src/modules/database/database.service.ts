@@ -13,8 +13,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       host: 'localhost',
       port: 5432,
       database: 'mail_man',
-      user : 'abhishek',
-      password : 'abhi'
+      user: 'abhishek',
+      password: 'abhi',
     });
 
     this.db = new Kysely<Database>({
@@ -31,6 +31,4 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
   getDb(): Kysely<Database> {
     return this.db;
   }
-
-  
 }

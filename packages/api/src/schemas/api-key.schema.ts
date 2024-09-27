@@ -5,8 +5,8 @@ export interface ApiKeyTable {
   api_key: string;
   project_id: string | null;
   created_by: string;
-  is_active : boolean;
-  expires_at : ColumnType<Date, string|undefined, string>;
+  is_active: boolean;
+  expires_at: ColumnType<Date, string | undefined, string>;
   updated_at: ColumnType<Date, string | undefined, string>;
   created_at: ColumnType<Date, string | undefined, never>;
 }

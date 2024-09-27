@@ -8,7 +8,8 @@
     "packages/*"
   ],
   "scripts": { 
-    "start:dev" : "cd ./packages/api && yarn start:dev"
+    "dev:api" : "cd ./packages/api && yarn start:dev",
+    "dev:client" : "cd ./packages/client && yarn dev"
   },
   "dependencies": {}
 }

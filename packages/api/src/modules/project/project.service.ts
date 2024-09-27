@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import {sql, Kysely } from 'kysely';
+import { sql, Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { generateUlid } from 'src/utils/generators';
@@ -14,7 +14,7 @@ export class ProjectService implements OnModuleInit {
   constructor(
     private readonly dbService: DatabaseService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   onModuleInit() {
     this.db = this.dbService.getDb();
@@ -47,7 +47,6 @@ export class ProjectService implements OnModuleInit {
   };
 
   getProjects = async (userId: string) => {
-
     interface ProjectResult {
       id: string;
       name: string;
@@ -56,7 +55,7 @@ export class ProjectService implements OnModuleInit {
       created_at: Date;
       updated_at: Date;
       role: string;
-    };
+    }
 
     const ownedProjects = this.db
       .selectFrom('projects')
@@ -73,7 +72,11 @@ export class ProjectService implements OnModuleInit {
 
     const accessibleProjects = this.db
       .selectFrom('projects')
-      .innerJoin('project_accesses', 'projects.id', 'project_accesses.project_id')
+      .innerJoin(
+        'project_accesses',
+        'projects.id',
+        'project_accesses.project_id',
+      )
       .select([
         'projects.id',
         'projects.name',
@@ -86,18 +89,14 @@ export class ProjectService implements OnModuleInit {
       .where('projects.status', '!=', 'deleted')
       .where('projects.owner_id', '!=', userId);
 
-    return await ownedProjects
-      .union(accessibleProjects)
-      .execute();
-  }
+    return await ownedProjects.union(accessibleProjects).execute();
+  };
 
   getCreatedProjects = async (
     owner_id: string,
     offset: number = 0,
     limit: number = 10,
   ) => {
-   
-
     return await this.db
       .selectFrom('projects')
       .where('owner_id', '=', owner_id)
@@ -107,12 +106,19 @@ export class ProjectService implements OnModuleInit {
       .execute();
   };
 
-  generateInviteToken = async (projectId: string, roleId: number, email: string) => {
-    const inviteToken = this.jwtService.sign({ projectId, roleId, email }, {
-      secret: 'jwt_secret',
-      expiresIn: '7d'
-    })
+  generateInviteToken = async (
+    projectId: string,
+    roleId: number,
+    email: string,
+  ) => {
+    const inviteToken = this.jwtService.sign(
+      { projectId, roleId, email },
+      {
+        secret: 'jwt_secret',
+        expiresIn: '7d',
+      },
+    );
 
     return inviteToken;
-  }
+  };
 }

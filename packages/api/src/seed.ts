@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const seedService = app.select(SeederModule).get(SeedService);
 
-  await seedService.seed()
-  console.log("Seeding successful");
+  await seedService.seed();
+  console.log('Seeding successful');
 }
 bootstrap();

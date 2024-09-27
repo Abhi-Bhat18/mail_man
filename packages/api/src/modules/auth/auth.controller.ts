@@ -30,29 +30,31 @@ export class AuthController {
 
   constructor(
     private readonly authService: AuthServices,
-    private readonly jwtService : JwtService,
+    private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly projectService: ProjectService,
-    private readonly projectAccessService : ProjectAccessService
+    private readonly projectAccessService: ProjectAccessService,
   ) {}
 
   @Post('sign-up')
-  async signup(@Query('inviteToken') token : string, @Body() body: CreateUserDto) {
-    
-    const verifiedToken = await this.jwtService.verify(token,{ 
-      secret : 'jwt_secret'
+  async signup(
+    @Query('inviteToken') token: string,
+    @Body() body: CreateUserDto,
+  ) {
+    const verifiedToken = await this.jwtService.verify(token, {
+      secret: 'jwt_secret',
     });
 
-    const { projectId, roleId ,email  } = verifiedToken;
+    const { projectId, roleId, email } = verifiedToken;
 
-    if(email != body.email) { 
+    if (email != body.email) {
       throw new HttpException('Invalid email', HttpStatus.BAD_REQUEST);
     }
 
-    // check project is active 
+    // check project is active
     const project = await this.projectService.getProjectById(projectId);
 
-    if(!project || (project && project.status !== 'active')) { 
+    if (!project || (project && project.status !== 'active')) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
@@ -60,12 +62,12 @@ export class AuthController {
 
     // create the project access for the user
     await this.projectAccessService.createProjectAccess({
-      roleId : roleId, 
-      projectId : project.id, 
-      userId : user.id
+      roleId: roleId,
+      projectId: project.id,
+      userId: user.id,
     });
 
-    return ;
+    return;
   }
 
   @Post('sign-in')
