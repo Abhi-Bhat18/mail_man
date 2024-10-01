@@ -1,9 +1,9 @@
 import {
-  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ulid } from 'ulid';
+import { ProjectAccessService } from '../project-access/projectAccess.service';
 
 @Injectable()
 export class AuthServices {
@@ -24,6 +25,7 @@ export class AuthServices {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly projectAccessService: ProjectAccessService,
   ) {}
 
   signUp = async (body: CreateUserDto) => {
@@ -83,14 +85,33 @@ export class AuthServices {
   };
 
   checkLogin = async (email: string) => {
-    return await this.userService.findByEmail(email);
+    const user = await this.userService.findByEmailAndJoinRole(email);
+    const defaultProject =
+      await this.projectAccessService.getDefaultProjectAcccess(user.id);
+    return { user, defaultProject };
   };
 
   signOut = async (id: string) => {
     return await this.userService.deleteRefreshToken(id);
   };
 
+  refreshAccessToken = async (id: string) => {
+    const user = await this.userService.findById(id);
+    if (user.refresh_token) {
+      const newToken = await this.generateJwt({
+        id: user.id,
+        role: user.role_id,
+        email: user.email,
+      });
+      return newToken;
+    } else {
+      throw new UnauthorizedException();
+    }
+  };
+
   private generateJwt = async (payload: object, expiry: string = '15min') => {
-    return await this.jwtService.signAsync(payload);
+    return await this.jwtService.signAsync(payload, {
+      expiresIn: expiry,
+    });
   };
 }

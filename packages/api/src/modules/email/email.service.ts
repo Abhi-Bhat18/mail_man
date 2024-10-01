@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { DatabaseService } from '../database/database.service';
@@ -51,7 +51,7 @@ export class EmailService {
       const job = await this.emailQueue.add('email', {
         mailOptions,
       });
-      return { success: true, message: 'Email queued successfully' };
+      return { success: true, message: 'Email queued successfully', job };
     } catch (error) {
       console.error('Error sending email:', error);
       throw error;

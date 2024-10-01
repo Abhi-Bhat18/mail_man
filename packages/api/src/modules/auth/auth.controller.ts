@@ -7,12 +7,12 @@ import {
   Body,
   HttpStatus,
   UseGuards,
-  Param,
   Query,
   HttpException,
+  UnauthorizedException,
 } from '@nestjs/common';
+
 import { Request, Response } from 'express';
-import { DatabaseService } from 'src/modules/database/database.service';
 import { AuthServices } from './auth.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
@@ -78,7 +78,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 15 minutes
     });
 
     return res.json({ message: 'LogIn successfull', user });
@@ -90,9 +90,43 @@ export class AuthController {
     return await this.authService.checkLogin(req.user.email);
   }
 
-  @Get('sign-out')
+  @Get('refresh-token')
+  async refreshAccessToken(@Req() req: Request, @Res() res: Response) {
+    const { token } = req.cookies;
+    if (!token) throw new UnauthorizedException();
+
+    let payload;
+    try {
+      payload = await this.jwtService.verifyAsync(token, {
+        secret: 'jwt_secret',
+      });
+    } catch (error) {
+      console.log('Error', error);
+      if (error.name === 'TokenExpiredError') {
+        payload = await this.jwtService.decode(token);
+      } else {
+        throw new UnauthorizedException(error);
+      }
+    }
+
+    const { id } = payload;
+
+    const accessToken = await this.authService.refreshAccessToken(id);
+
+    res.cookie('token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.json({ message: 'Access token refreshed successfully', success: true });
+  }
+
+  @Post('sign-out')
   @UseGuards(AuthGuard)
   async signout(@Req() req: Request, @Res() res: Response) {
+    console.log('Hitting the correct route');
     await this.authService.signOut(req.user.id);
 
     res.clearCookie('token');

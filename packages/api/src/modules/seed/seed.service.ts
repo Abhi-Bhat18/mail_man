@@ -9,6 +9,9 @@ import { generateUlid } from '@/utils/generators';
 @Injectable()
 export class SeedService implements OnModuleInit {
   private db: Kysely<Database>;
+  private owner_id: number;
+  private user_id: string;
+
   constructor(private readonly databaseService: DatabaseService) {}
 
   onModuleInit() {
@@ -18,43 +21,49 @@ export class SeedService implements OnModuleInit {
   async seed() {
     await this.seedRoles();
     await this.seedDefaultUser();
+    await this.setDefaultProject();
   }
 
   private async seedRoles() {
     for (const role of roles) {
       const existingRole = await this.db
         .selectFrom('roles')
-        .select('id')
+        .selectAll()
         .where('name', '=', role.name)
         .executeTakeFirst();
 
+      if (existingRole.name == 'owner') {
+        this.owner_id = existingRole.id;
+      }
+
       if (!existingRole) {
-        await this.db
+        const newRole = await this.db
           .insertInto('roles')
           .values({ name: role.name, description: role.description })
-          .execute();
+          .returningAll()
+          .executeTakeFirst();
+
+        if (newRole.name == 'owner') {
+          this.owner_id = newRole.id;
+        }
       }
     }
   }
 
   private async seedDefaultUser() {
-    const defaultUser = {
-      username: 'admin',
-      email: 'admin@example.com',
-      password: '',
-    };
-
     const existingUser = await this.db
       .selectFrom('users')
-      .select('id')
+      .selectAll()
       .executeTakeFirst();
 
-    console.log('User', existingUser);
+    if (existingUser) {
+      this.user_id = existingUser.id;
+    }
 
     if (!existingUser) {
       const hashedPassword = await bcrypt.hash('adminpassword', 10);
 
-      await this.db
+      const user = await this.db
         .insertInto('users')
         .values({
           id: generateUlid(),
@@ -62,12 +71,52 @@ export class SeedService implements OnModuleInit {
           last_name: 'admin',
           email: 'admin@example.com',
           password: hashedPassword,
+          role_id: this.owner_id,
         })
         .returning('id')
         .executeTakeFirstOrThrow();
+
+      console.log('User id', user.id);
+
+      this.user_id = user.id;
+
       console.log('Default user created successfully');
       console.log('Email', 'admin@example.com');
       console.log('Password', 'adminpassword');
+    }
+  }
+
+  private async setDefaultProject() {
+    const projectExist = await this.db
+      .selectFrom('projects')
+      .selectAll()
+      .executeTakeFirst();
+
+    if (!projectExist) {
+      const project = await this.db
+        .insertInto('projects')
+        .values({
+          id: generateUlid(),
+          name: 'Default Project',
+          description: 'Default project',
+          owner_id: this.user_id,
+          status: 'active',
+        })
+        .returningAll()
+        .executeTakeFirst();
+
+      // create the project access
+      await this.db
+        .insertInto('project_accesses')
+        .values({
+          id: generateUlid(),
+          project_id: project.id,
+          role_id: this.owner_id,
+          user_id: this.user_id,
+        })
+        .execute();
+
+      console.log('Project and project access created successfully');
     }
   }
 }

@@ -2,7 +2,7 @@ import {
   Controller,
   Get,
   Post,
-  Put,
+  // Put,
   Req,
   Body,
   Param,
@@ -15,8 +15,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { Request } from 'express';
 import { ProjectAccessService } from '../project-access/projectAccess.service';
-import { CreateProjectAccessDto } from './dto/create-project-access.dto';
-import { UserService } from '../user/user.service';
+// import { CreateProjectAccessDto } from './dto/create-project-access.dto';
+// import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ProjectInviteDto } from './dto/project-invite.dto';
 

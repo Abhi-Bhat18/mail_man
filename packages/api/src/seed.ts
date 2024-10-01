@@ -10,5 +10,6 @@ async function bootstrap() {
 
   await seedService.seed();
   console.log('Seeding successful');
+  app.close();
 }
 bootstrap();

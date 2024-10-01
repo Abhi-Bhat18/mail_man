@@ -3,7 +3,6 @@ import { DatabaseService } from 'src/modules/database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { NewUser } from 'src/schemas/user.schema';
-import { generateUlid } from 'src/utils/generators';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -30,6 +29,22 @@ export class UserService implements OnModuleInit {
       .selectFrom('users')
       .where('email', '=', email)
       .select(['email', 'first_name', 'last_name', 'id', 'password'])
+      .executeTakeFirst();
+  };
+
+  findByEmailAndJoinRole = async (email: string) => {
+    return await this.db
+      .selectFrom('users')
+      .where('users.email', '=', email)
+      .innerJoin('roles', 'roles.id', 'users.role_id')
+      .select([
+        'email',
+        'first_name',
+        'last_name',
+        'users.id',
+        'password',
+        'roles.name as role',
+      ])
       .executeTakeFirst();
   };
 

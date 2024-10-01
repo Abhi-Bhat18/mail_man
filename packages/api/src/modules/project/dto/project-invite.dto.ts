@@ -1,4 +1,4 @@
-import { IsEmail, IsNumber, IsString, Max, Min, min } from 'class-validator';
+import { IsEmail, IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class ProjectInviteDto {
   @IsString()

@@ -1,11 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { sql, Kysely } from 'kysely';
+import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { generateUlid } from 'src/utils/generators';
 import { JwtService } from '@nestjs/jwt';
-import { ProjectAccessService } from '../project-access/projectAccess.service';
+// import { ProjectAccessService } from '../project-access/projectAccess.service';
 
 @Injectable()
 export class ProjectService implements OnModuleInit {
@@ -47,16 +47,6 @@ export class ProjectService implements OnModuleInit {
   };
 
   getProjects = async (userId: string) => {
-    interface ProjectResult {
-      id: string;
-      name: string;
-      description: string;
-      status: 'active' | 'in-active' | 'deleted';
-      created_at: Date;
-      updated_at: Date;
-      role: string;
-    }
-
     const ownedProjects = this.db
       .selectFrom('projects')
       .select([

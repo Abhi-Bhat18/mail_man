@@ -4,7 +4,6 @@ import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { CreateProjectAccessDto } from '../project/dto/create-project-access.dto';
 import { generateUlid } from 'src/utils/generators';
-import { userInfo } from 'os';
 
 @Injectable()
 export class ProjectAccessService implements OnModuleInit {
@@ -32,6 +31,27 @@ export class ProjectAccessService implements OnModuleInit {
       .innerJoin('roles', 'role_id', 'roles.id')
       .selectAll()
       .execute();
+  };
+
+  getDefaultProjectAcccess = async (user_id: string) => {
+    return await this.db
+      .selectFrom('project_accesses')
+      .where('user_id', '=', user_id)
+      .innerJoin('roles as role', 'project_accesses.role_id', 'role.id')
+      .innerJoin(
+        'projects as project',
+        'project_accesses.project_id',
+        'project.id',
+      )
+      .select([
+        'project_accesses.id as project_access_id',
+        'project_accesses.role_id as role_id',
+        'project.id as project_id',
+        'project.name as project_name',
+        'project.status as project_status',
+        'role.name as project_role',
+      ])
+      .executeTakeFirst();
   };
 
   createProjectAccess = async (body: CreateProjectAccessDto) => {

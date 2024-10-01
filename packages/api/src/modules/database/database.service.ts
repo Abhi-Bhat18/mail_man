@@ -13,7 +13,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       host: 'localhost',
       port: 5432,
       database: 'mail_man',
-      user: 'abhishek',
+      user: 'abhi',
       password: 'abhi',
     });
 

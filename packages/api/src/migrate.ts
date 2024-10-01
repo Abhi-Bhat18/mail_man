@@ -16,7 +16,7 @@ async function migrateToLatest() {
         host: 'localhost',
         database: 'mail_man',
         port: 5432,
-        user: 'abhishek',
+        user: 'abhi',
         password: 'abhi',
       }),
     }),

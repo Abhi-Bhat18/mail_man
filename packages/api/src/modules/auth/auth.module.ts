@@ -13,7 +13,7 @@ import { ProjectAccessModule } from '../project-access/projectAccess.module';
     JwtModule.register({
       global: true,
       secret: 'jwt_secret',
-      signOptions: { expiresIn: '15min' },
+      signOptions: { expiresIn: '7days' },
     }),
     UserModule,
     ProjectModule,
