@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -24,23 +24,33 @@ const profileSchema = z.object({
 const Profile = () => {
   const user = useAppSelector((state) => state.auth.user);
 
-  console.log("User", user);
-
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       first_name: user?.first_name,
       last_name: user?.last_name,
       email: user?.email,
-      contact: user?.contact ? user.contact : "",
+      contact: "",
     },
   });
+  const [ updated , setUpdated] = useState(false);
 
-  const formUpdated : boolean = () => { 
-    const values = form.getValues()
-    console.log("Form values", values);
-    return true;
-  }
+  const formUpdated = () => {
+    const values = form.getValues();
+    if (
+      values.first_name !== user?.first_name ||
+      values.last_name !== user?.last_name ||
+      values.email !== user?.email
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  useEffect(( ) => { 
+    setUpdated(formUpdated());
+  }, [form.formState]);
 
   return (
     <div className="flex w-full bg-card p-5 rounded-md shadow-md">
@@ -108,9 +118,7 @@ const Profile = () => {
                 }}
               />
             </div>
-            { 
-              formUpdated() ? <></> : <></>
-            }
+            {formUpdated() ? <></> : <></>}
           </form>
         </Form>
       </div>
