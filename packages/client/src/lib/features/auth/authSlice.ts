@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { authAPIs } from "./authApis";
+import { userAPIs } from "../user/userApis";
 
 interface IinitialState {
   user: {
@@ -9,6 +10,7 @@ interface IinitialState {
     email: string;
     img_url?: string | null;
     role: string;
+    contact?: string;
   } | null;
 
   defaultProject: {
@@ -18,7 +20,6 @@ interface IinitialState {
     project_role: string;
     project_status: string;
     role_id: number;
-    contact : string;
   } | null;
   isLoggedIn: boolean;
 }
@@ -49,6 +50,12 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
       }
     );
+    builder.addMatcher(
+        userAPIs.endpoints.updateProfile.matchFulfilled,
+        (state, action) => { 
+            state.user = { ...state.user, ...action.payload }
+        }
+    )
   },
 });
 

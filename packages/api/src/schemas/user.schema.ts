@@ -6,6 +6,7 @@ export interface UserTable {
   last_name: string;
   email: string;
   password: string;
+  contact: string;
   img_url: string | null;
   role_id: number;
   refresh_token: string | null;

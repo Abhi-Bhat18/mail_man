@@ -15,6 +15,8 @@ import { RoleModule } from './modules/role/role.module';
 import { SeederModule } from './modules/seed/seed.module';
 import { CommandRunnerModule } from 'nest-commander';
 import { ProjectAccessModule } from './modules/project-access/projectAccess.module';
+import { ContactListModule } from './modules/contact-list/contactList.module';
+import { EmailTemplateModule } from './modules/email-template/emaliTemplate.module';
 
 @Module({
   // configuringing the env variables
@@ -37,10 +39,12 @@ import { ProjectAccessModule } from './modules/project-access/projectAccess.modu
     UserModule,
     ProjectModule,
     ProjectAccessModule,
+    ContactListModule,
     EmailModule,
     ApiModule,
     RoleModule,
     CommandRunnerModule,
+    EmailTemplateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

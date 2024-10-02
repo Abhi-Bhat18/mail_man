@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
-import { NewUser } from 'src/schemas/user.schema';
+import { NewUser, UserUpdate } from 'src/schemas/user.schema';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -24,6 +24,15 @@ export class UserService implements OnModuleInit {
       .executeTakeFirst();
   };
 
+  findByIdAndUpdate = async (id: string, values: UserUpdate) => {
+    return await this.db
+      .updateTable('users')
+      .where('id', '=', id)
+      .set(values)
+      .returning(['email', 'first_name', 'last_name', 'users.id', 'contact'])
+      .executeTakeFirst();
+  };
+
   findByEmail = async (email: string) => {
     return await this.db
       .selectFrom('users')
@@ -32,10 +41,10 @@ export class UserService implements OnModuleInit {
       .executeTakeFirst();
   };
 
-  findByEmailAndJoinRole = async (email: string) => {
+  findByIdAndJoinRole = async (id: string) => {
     return await this.db
       .selectFrom('users')
-      .where('users.email', '=', email)
+      .where('users.id', '=', id)
       .innerJoin('roles', 'roles.id', 'users.role_id')
       .select([
         'email',
@@ -43,6 +52,7 @@ export class UserService implements OnModuleInit {
         'last_name',
         'users.id',
         'password',
+        'contact',
         'roles.name as role',
       ])
       .executeTakeFirst();
@@ -59,6 +69,7 @@ export class UserService implements OnModuleInit {
   getAllUsers = async () => {
     return await this.db.selectFrom('users').selectAll().execute();
   };
+
   updateRefreshToken = async (id: string, refreshToken: string) => {
     return await this.db
       .updateTable('users')

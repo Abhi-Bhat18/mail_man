@@ -84,8 +84,9 @@ export class AuthServices {
     return { user, accessToken: accessToken };
   };
 
-  checkLogin = async (email: string) => {
-    const user = await this.userService.findByEmailAndJoinRole(email);
+  checkLogin = async (id: string) => {
+    const user = await this.userService.findByIdAndJoinRole(id);
+
     const defaultProject =
       await this.projectAccessService.getDefaultProjectAcccess(user.id);
     return { user, defaultProject };

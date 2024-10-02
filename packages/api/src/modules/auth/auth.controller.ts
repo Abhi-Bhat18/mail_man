@@ -87,7 +87,7 @@ export class AuthController {
   @Get('check')
   @UseGuards(AuthGuard)
   async checkLogin(@Req() req: Request) {
-    return await this.authService.checkLogin(req.user.email);
+    return await this.authService.checkLogin(req.user.id);
   }
 
   @Get('refresh-token')
@@ -126,7 +126,6 @@ export class AuthController {
   @Post('sign-out')
   @UseGuards(AuthGuard)
   async signout(@Req() req: Request, @Res() res: Response) {
-    console.log('Hitting the correct route');
     await this.authService.signOut(req.user.id);
 
     res.clearCookie('token');
