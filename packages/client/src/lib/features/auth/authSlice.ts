@@ -43,6 +43,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
       }
     );
+
     builder.addMatcher(
       authAPIs.endpoints.logout.matchFulfilled,
       (state, action) => {
@@ -50,6 +51,7 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
       }
     );
+    
     builder.addMatcher(
         userAPIs.endpoints.updateProfile.matchFulfilled,
         (state, action) => { 

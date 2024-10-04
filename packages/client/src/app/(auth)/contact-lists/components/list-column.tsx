@@ -44,7 +44,7 @@ export const ContactListColumns: ColumnDef<Contact>[] = [
     accessorKey: "name",
     cell: ({ row }) => {
       const { id, name } = row.original;
-      return <Link href={`/contact-lists/contact?id=${id}`}>{name}</Link>;
+      return <Link href={`/contact-list/${id}`}>{name}</Link>;
     },
   },
   {

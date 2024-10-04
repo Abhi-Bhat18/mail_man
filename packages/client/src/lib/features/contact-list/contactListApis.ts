@@ -10,6 +10,14 @@ export const contactListAPIs = api.injectEndpoints({
       }),
     }),
 
+    getAContactLists: builder.query({
+      query: ({ project_id, contact_list_id }) => ({
+        url: `/contact-list/${contact_list_id}`,
+        method: "GET",
+        params: { project_id },
+      }),
+    }),
+
     createNewList: builder.mutation({
       query: (listBody) => ({
         url: "/contact-list",
@@ -20,5 +28,8 @@ export const contactListAPIs = api.injectEndpoints({
   }),
 });
 
-export const { useCreateNewListMutation, useGetAllContactListsQuery } =
-  contactListAPIs;
+export const {
+  useCreateNewListMutation,
+  useGetAllContactListsQuery,
+  useGetAContactListsQuery,
+} = contactListAPIs;

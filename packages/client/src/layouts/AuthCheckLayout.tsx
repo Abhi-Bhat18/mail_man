@@ -9,7 +9,9 @@ interface Props {
 }
 
 const AuthCheckLayout: React.FC<Props> = ({ children }) => {
+  
   const { isLoggedIn } = useAppSelector((state) => state.auth);
+
   const router = useRouter();
 
   const { error, isLoading } = useCheckLoginQuery(undefined, {

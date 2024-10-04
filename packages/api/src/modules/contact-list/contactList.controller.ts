@@ -7,14 +7,20 @@ import {
   Req,
   Body,
   UnauthorizedException,
+  Param,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { Request } from 'express';
+import multer from 'multer';
+
+import { Request, Express } from 'express';
 import { ContactListService } from './contactList.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { ContactListQueryDto } from './dto/contactListQuery.dto';
 import { ProjectAccessService } from '../project-access/projectAccess.service';
 import { ContactListDto } from './dto/contactList.dto';
 import { generateUlid } from '@/utils/generators';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('contact-list')
 @UseGuards(AuthGuard)
@@ -44,6 +50,11 @@ export class ContactListController {
     return lists;
   }
 
+  @Get(':id')
+  async getAContactList(@Param('id') id: string) {
+    return await this.contactListService.getAContactList(id);
+  }
+
   @Post()
   async createContactList(@Body() body: ContactListDto, @Req() req: Request) {
     const { project_id } = body;
@@ -65,5 +76,13 @@ export class ContactListController {
     });
 
     return newList;
+  }
+
+  @Post('import')
+  @UseInterceptors(FileInterceptor('file'))
+  async importContacts(@UploadedFile() file: Express.Multer.File) {
+    console.log('File', file);
+
+    // get the data;
   }
 }

@@ -13,6 +13,7 @@ export class ContactListService implements OnModuleInit {
   onModuleInit() {
     this.db = this.dbService.getDb();
   }
+
   async getContactLists(query: ContactListQueryDto) {
     let { page, page_limit } = query;
     const { project_id } = query;
@@ -34,11 +35,32 @@ export class ContactListService implements OnModuleInit {
         'u.first_name',
         'u.last_name',
         'cl.created_by',
-        'cl.created_at'
+        'cl.created_at',
       ])
       .offset((page - 1) * page_limit)
       .limit(page_limit)
       .execute();
+  }
+
+  async getAContactList(id: string) {
+    return await this.db
+      .selectFrom('contact_lists as cl')
+      .where('cl.id', '=', id)
+      .innerJoin('users as u', 'u.id', 'cl.created_by')
+      .select([
+        'cl.id',
+        'cl.name',
+        'cl.description',
+        'cl.total_contacts',
+        'cl.email_opt_in',
+        'cl.email_type',
+        'cl.created_by',
+        'u.first_name',
+        'u.last_name',
+        'cl.updated_at',
+        'cl.created_at',
+      ])
+      .executeTakeFirst();
   }
 
   async createContactList(body: NewContactList) {

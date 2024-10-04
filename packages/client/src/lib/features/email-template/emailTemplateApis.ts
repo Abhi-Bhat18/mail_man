@@ -10,6 +10,14 @@ export const emailTemplateAPIs = api.injectEndpoints({
       }),
     }),
 
+    getAnEmailTemplate: builder.query({
+      query: ({ project_id, template_id }) => ({
+        url: `/email-template/${template_id}`,
+        method: "GET",
+        params: { project_id },
+      }),
+    }),
+
     createNewTemplate: builder.mutation({
       query: (body) => ({
         url: "/email-template",
@@ -20,5 +28,8 @@ export const emailTemplateAPIs = api.injectEndpoints({
   }),
 });
 
-export const { useGetEmailTemplatesQuery, useCreateNewTemplateMutation } =
-  emailTemplateAPIs;
+export const {
+  useGetAnEmailTemplateQuery,
+  useGetEmailTemplatesQuery,
+  useCreateNewTemplateMutation,
+} = emailTemplateAPIs;

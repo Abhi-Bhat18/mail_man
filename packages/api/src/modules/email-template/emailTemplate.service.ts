@@ -15,6 +15,14 @@ export class EmailTemplateService implements OnModuleInit {
     this.db = this.dbService.getDb();
   }
 
+  async getATemplateById(id: string) {
+    return await this.db
+      .selectFrom('email_templates as et')
+      .where('et.id', '=', id)
+      .selectAll()
+      .executeTakeFirst();
+  }
+
   async getAllTemplates(query: EmailTemplateQueryDto) {
     const { project_id } = query;
 

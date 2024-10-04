@@ -12,6 +12,7 @@ interface Props {
 }
 
 const AuthenticatedLayout: React.FC<Props> = ({ children }) => {
+  
   const { isLoggedIn } = useAppSelector((state) => state.auth);
   
   const router = useRouter();

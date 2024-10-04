@@ -6,6 +6,7 @@ import {
   Query,
   Post,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { EmailTemplateService } from './emailTemplate.service';
@@ -22,6 +23,11 @@ export class EmailTemplateController {
   @Get()
   async getTemplates(@Query() query: EmailTemplateQueryDto) {
     return await this.emailTemplateService.getAllTemplates(query);
+  }
+
+  @Get(':id')
+  async getAnEmailTemplate(@Param('id') id: string) {
+    return await this.emailTemplateService.getATemplateById(id);
   }
 
   @Post()

@@ -28,28 +28,36 @@ const templateSchema = z.object({
     .min(4, "Description must contain at least 4 characters"),
 });
 
-const SaveTemplate = () => {
+const UpdateTemplate = () => {
   const router = useRouter();
 
   const [createTemplate, { isError, isLoading }] =
     useCreateNewTemplateMutation();
 
-  const project_id = useAppSelector((state) => state.auth.defaultProject?.project_id);
+  const project_id = useAppSelector(
+    (state) => state.auth.defaultProject?.project_id
+  );
+
+  const template = useAppSelector((state) => state.template);
+  let name, description, template_id;
+  if (template) {
+    name = template.name;
+    description = template.description;
+    template_id = template.template_id;
+  }
+  console.log("Template", template);
 
   const form = useForm<z.infer<typeof templateSchema>>({
     resolver: zodResolver(templateSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: name ? name : "",
+      description: description ? description : "",
     },
   });
 
   const document = useDocument();
 
   const handleSubmit = async (values: z.infer<typeof templateSchema>) => {
-    console.log("values", values);
-    console.log("Document", document);
-    console.log("code");
     try {
       const result = await createTemplate({
         ...values,
@@ -97,9 +105,9 @@ const SaveTemplate = () => {
           )}
         />
         <div className="space-x-5 w-full flex justify-end items-end">
-          <Button variant={"secondary"}>Save as draft</Button>
+          <Button variant={"secondary"}>Update as draft</Button>
           <Button type="submit" variant={"default"}>
-            save
+            Update
           </Button>
         </div>
       </form>
@@ -107,4 +115,4 @@ const SaveTemplate = () => {
   );
 };
 
-export default SaveTemplate;
+export default UpdateTemplate;

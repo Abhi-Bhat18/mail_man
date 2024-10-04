@@ -101,7 +101,6 @@ export class AuthController {
         secret: 'jwt_secret',
       });
     } catch (error) {
-      console.log('Error', error);
       if (error.name === 'TokenExpiredError') {
         payload = await this.jwtService.decode(token);
       } else {
