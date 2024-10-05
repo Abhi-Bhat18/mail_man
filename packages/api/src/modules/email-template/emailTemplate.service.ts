@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { Kysely } from 'kysely';
+import { Kysely, sql } from 'kysely';
 import { Database } from '../database/database.types';
 import { NewEmailTemplate } from '@/schemas/email-template.schema';
 import { EmailTemplateQueryDto } from './dto/emailTemplateQuery.dto';
@@ -42,6 +42,21 @@ export class EmailTemplateService implements OnModuleInit {
         'u.last_name',
       ])
       .execute();
+  }
+
+  async searchByName(query: string) {
+    const searchPattern = `%${query}%`;
+    const result = await this.db
+      .selectFrom('email_templates')
+      .where(
+        ({ ref }) =>
+          sql<boolean>`lower(${ref('name')}) like lower(${searchPattern})`,
+      )
+      .select(['id', 'name' ])
+      .execute();
+    console.log('Result', result);
+
+    return result;
   }
 
   async insertTemplate(values: NewEmailTemplate) {

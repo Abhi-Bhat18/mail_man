@@ -8,12 +8,15 @@ import {
   UseGuards,
   Param,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { query, Request } from 'express';
 import { EmailTemplateService } from './emailTemplate.service';
 import { emailTemplateDto } from './dto/emailTemplate.dto';
 import { generateUlid } from '@/utils/generators';
 import { AuthGuard } from '../auth/auth.guard';
-import { EmailTemplateQueryDto } from './dto/emailTemplateQuery.dto';
+import {
+  EmailSearchQueryDto,
+  EmailTemplateQueryDto,
+} from './dto/emailTemplateQuery.dto';
 
 @Controller('email-template')
 @UseGuards(AuthGuard)
@@ -25,9 +28,11 @@ export class EmailTemplateController {
     return await this.emailTemplateService.getAllTemplates(query);
   }
 
-  @Get(':id')
-  async getAnEmailTemplate(@Param('id') id: string) {
-    return await this.emailTemplateService.getATemplateById(id);
+  @Get('search')
+  async searchByName(@Query() query: EmailSearchQueryDto) {
+    const { search } = query;
+    console.log('Search', search);
+    return await this.emailTemplateService.searchByName(search);
   }
 
   @Post()
@@ -37,5 +42,10 @@ export class EmailTemplateController {
       ...body,
       created_by: req.user.id,
     });
+  }
+
+  @Get(':id')
+  async getAnEmailTemplate(@Param('id') id: string) {
+    return await this.emailTemplateService.getATemplateById(id);
   }
 }

@@ -18,6 +18,14 @@ export const emailTemplateAPIs = api.injectEndpoints({
       }),
     }),
 
+    searchForTemplate: builder.query({
+      query: (query) => ({
+        url: `/email-template/search`,
+        method: "GET",
+        params: { search : query },
+      }),
+    }),
+
     createNewTemplate: builder.mutation({
       query: (body) => ({
         url: "/email-template",
@@ -31,5 +39,6 @@ export const emailTemplateAPIs = api.injectEndpoints({
 export const {
   useGetAnEmailTemplateQuery,
   useGetEmailTemplatesQuery,
+  useSearchForTemplateQuery,
   useCreateNewTemplateMutation,
 } = emailTemplateAPIs;

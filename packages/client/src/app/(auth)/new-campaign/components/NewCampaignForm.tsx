@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 import { useForm } from "react-hook-form";
@@ -13,10 +14,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { ChevronsUpDown } from "lucide-react";
+
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import SendTestEmail from "./SendTestEmail";
+import { useSearchForTemplateQuery } from "@/lib/features/email-template/emailTemplateApis";
+import CommandQuery from "./CommandQuery";
 import SearchableDropDown from "./SearchableDropDown";
 
 export const campaignSchema = z.object({
@@ -32,6 +50,8 @@ const NewCampaignForm = () => {
     resolver: zodResolver(campaignSchema),
     defaultValues: {},
   });
+
+  const [template, setTemplate] = useState("");
 
   return (
     <div className="flex space-x-5">
@@ -78,14 +98,18 @@ const NewCampaignForm = () => {
               )}
             />
             <SearchableDropDown
-              name={"email_list_id"}
+              useSearchQuery={useSearchForTemplateQuery}
               form={form}
-              formLabel="Email List"
+              name={"template_id"}
+              placeholder="Search for templates"
+              formLabel="Email template"
             />
             <SearchableDropDown
-              name={"template_id"}
+              useSearchQuery={useSearchForTemplateQuery}
               form={form}
-              formLabel="Template"
+              name={"email_list_id"}
+              placeholder="Search form email list"
+              formLabel="Email List"
             />
             <div className="flex space-x-5 justify-end">
               <Button variant={"secondary"}> Save as draft </Button>

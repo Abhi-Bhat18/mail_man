@@ -12,3 +12,8 @@ export class EmailTemplateQueryDto {
   @IsString()
   project_id: string;
 }
+
+export class EmailSearchQueryDto {
+  @IsString()
+  search: string;
+}
