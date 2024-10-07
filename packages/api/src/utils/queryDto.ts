@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class ContactListQueryDto {
+export class queryDto {
   @IsOptional()
   @IsString()
   page?: number;

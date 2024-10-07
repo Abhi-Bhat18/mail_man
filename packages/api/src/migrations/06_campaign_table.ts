@@ -5,11 +5,11 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .createTable('campaigns')
     .addColumn('id', 'varchar', (col) => col.primaryKey())
     .addColumn('name', 'varchar', (col) => col.notNull())
-    .addColumn('description', 'varchar', (col) => col.notNull())
     .addColumn('subject', 'varchar', (col) => col.notNull())
     .addColumn('mail_from', 'varchar', (col) => col.notNull())
     .addColumn('send_later', 'boolean', (col) => col.notNull())
-    .addColumn('send_date', 'timestamp', (col) => col.notNull())
+    .addColumn('scheduled_at', 'timestamp', (col) => col.notNull())
+    .addColumn('project_id', 'varchar', (col) => col.notNull())
     .addColumn('template_id', 'varchar', (col) => col.notNull())
     .addColumn('contact_list_id', 'varchar', (col) => col.notNull())
     .addColumn('status', 'varchar', (col) =>
@@ -41,7 +41,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
   await db.schema
     .createIndex('campaign_send_date_index')
     .on('campaigns')
-    .column('send_date')
+    .column('scheduled_at')
     .execute();
 };
 

@@ -25,6 +25,14 @@ export const contactListAPIs = api.injectEndpoints({
         body: listBody,
       }),
     }),
+
+    searchForContactList: builder.query({
+      query: (query) => ({
+        url: `/contact-list/search`,
+        method: "GET",
+        params: { search: query },
+      }),
+    }),
   }),
 });
 
@@ -32,4 +40,5 @@ export const {
   useCreateNewListMutation,
   useGetAllContactListsQuery,
   useGetAContactListsQuery,
+  useSearchForContactListQuery
 } = contactListAPIs;

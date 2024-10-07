@@ -76,7 +76,7 @@ const SearchableDropDown: React.FC<Props> = ({
                         onClick={() => {
                           console.log("Setting the value");
                           setInputValue(item.name);
-                          form.setValue("template_id", item.id);
+                          form.setValue(name, item.id);
                           setOpen(false);
                         }}
                       >

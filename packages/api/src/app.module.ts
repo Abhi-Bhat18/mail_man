@@ -1,7 +1,6 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { DatabaseModule } from './modules/database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
@@ -17,6 +16,7 @@ import { CommandRunnerModule } from 'nest-commander';
 import { ProjectAccessModule } from './modules/project-access/projectAccess.module';
 import { ContactListModule } from './modules/contact-list/contactList.module';
 import { EmailTemplateModule } from './modules/email-template/emaliTemplate.module';
+import { CampaignModule } from './modules/campaign/campaign.module';
 
 @Module({
   // configuringing the env variables
@@ -40,6 +40,7 @@ import { EmailTemplateModule } from './modules/email-template/emaliTemplate.modu
     ProjectModule,
     ProjectAccessModule,
     ContactListModule,
+    CampaignModule,
     EmailModule,
     ApiModule,
     RoleModule,

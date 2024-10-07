@@ -12,6 +12,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .addColumn('email_opt_in', 'varchar', (col) =>
       col.notNull().check(sql`email_opt_in IN ('single', 'double')`),
     )
+    .addColumn('project_id', 'varchar', (col) => col.notNull())
     .addColumn('status', 'varchar', (col) =>
       col
         .notNull()

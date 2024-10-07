@@ -20,7 +20,7 @@ export class ProjectService implements OnModuleInit {
     this.db = this.dbService.getDb();
   }
 
-  createProject = async (body: CreateProjectDto, owner_id: string) => {
+  createProject = async (body: CreateProjectDto, created_by: string) => {
     const { description, name } = body;
 
     // create the project for the user
@@ -30,7 +30,7 @@ export class ProjectService implements OnModuleInit {
         id: generateUlid(),
         name,
         description,
-        owner_id,
+        created_by,
       })
       .returningAll()
       .execute();
@@ -57,7 +57,7 @@ export class ProjectService implements OnModuleInit {
         'created_at',
         'updated_at',
       ])
-      .where('owner_id', '=', userId)
+      .where('created_by', '=', userId)
       .where('status', '!=', 'deleted');
 
     const accessibleProjects = this.db
@@ -77,7 +77,7 @@ export class ProjectService implements OnModuleInit {
       ])
       .where('project_accesses.user_id', '=', userId)
       .where('projects.status', '!=', 'deleted')
-      .where('projects.owner_id', '!=', userId);
+      .where('projects.created_by', '!=', userId);
 
     return await ownedProjects.union(accessibleProjects).execute();
   };
@@ -89,7 +89,7 @@ export class ProjectService implements OnModuleInit {
   ) => {
     return await this.db
       .selectFrom('projects')
-      .where('owner_id', '=', owner_id)
+      .where('created_by', '=', owner_id)
       .selectAll()
       .limit(limit)
       .offset(offset)

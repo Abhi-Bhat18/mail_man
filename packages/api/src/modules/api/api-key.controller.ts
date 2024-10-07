@@ -41,7 +41,7 @@ export class ApiController {
 
     let canGenerateAPIKey;
 
-    if (project.owner_id === req.user.id) {
+    if (project.created_by === req.user.id) {
       canGenerateAPIKey = true;
     }
 

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 // Define the props type
 interface FileUploadProps {
-  onFileSelect: (file: File | null) => void;
+    form : 
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
@@ -19,6 +19,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log("Validating the file");
       validateFile(file);
     }
   };
@@ -67,7 +68,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
           Drag and drop a CSV file here, or click to select a file
         </p>
         {selectedFile && <p>Selected file: {selectedFile.name}</p>}
-      {/* {error && <p className="text-red-500">{error}</p>} */}
+        {/* {error && <p className="text-red-500">{error}</p>} */}
       </label>
     </div>
   );

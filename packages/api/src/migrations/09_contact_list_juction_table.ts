@@ -6,6 +6,7 @@ export const up = async (db: Kysely<Database>) => {
   await db.schema
     .createTable('contact_list_memberships')
     .addColumn('contact_id', 'varchar', (col) => col.notNull())
+    .addColumn('project_id', 'varchar', (col) => col.notNull())
     .addColumn('contact_list_id', 'varchar', (col) => col.notNull())
     .addColumn('added_at', 'timestamp', (col) =>
       col.defaultTo(sql`now()`).notNull(),

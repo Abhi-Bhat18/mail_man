@@ -31,7 +31,6 @@ export class EmailTemplateController {
   @Get('search')
   async searchByName(@Query() query: EmailSearchQueryDto) {
     const { search } = query;
-    console.log('Search', search);
     return await this.emailTemplateService.searchByName(search);
   }
 

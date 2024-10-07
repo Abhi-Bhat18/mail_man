@@ -7,7 +7,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .addColumn('name', 'varchar', (col) => col.notNull())
     .addColumn('description', 'varchar', (col) => col.notNull())
     .addColumn('status', 'varchar', (col) => col.notNull().defaultTo('active'))
-    .addColumn('owner_id', 'varchar', (col) => col.notNull())
+    .addColumn('created_by', 'varchar', (col) => col.notNull())
     .addColumn('updated_at', 'timestamp', (col) =>
       col.defaultTo(sql`now()`).notNull(),
     )
@@ -19,7 +19,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
   await db.schema
     .createIndex('ower_index')
     .on('projects')
-    .column('owner_id')
+    .column('created_by')
     .execute();
 };
 

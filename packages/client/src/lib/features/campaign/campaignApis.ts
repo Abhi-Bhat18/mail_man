@@ -1,6 +1,6 @@
 import api from "@/lib/api";
 
-export const campaignSlice = api.injectEndpoints({
+export const campaignAPIs = api.injectEndpoints({
   endpoints: (builder) => ({
     getAllCampaigns: builder.query({
       query: (project_id: string) => ({
@@ -12,34 +12,33 @@ export const campaignSlice = api.injectEndpoints({
 
     getACampaign: builder.query({
       query: ({ project_id, campaign_id }) => ({
-        url: `campaign/${campaign_id}`,
+        url: `/campaign/${campaign_id}`,
         method: "GET",
         params: { project_id },
       }),
     }),
 
-    createACampaign: builder.query({
+    createACampaign: builder.mutation({
       query: (body) => ({
-        query: "campaign",
+        url: "/campaign",
         method: "POST",
         body: body,
       }),
     }),
 
-    editACampaign: builder.query({
+    editACampaign: builder.mutation({
       query: (body) => ({
         query: "campaign",
         method: "PUT",
         body: body,
       }),
     }),
-
   }),
 });
 
 export const {
   useGetAllCampaignsQuery,
-  useCreateACampaignQuery,
-  useEditACampaignQuery,
+  useCreateACampaignMutation,
+  useEditACampaignMutation,
   useGetACampaignQuery,
-} = campaignSlice;
+} = campaignAPIs;

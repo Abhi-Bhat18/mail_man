@@ -44,7 +44,7 @@ export class ProjectController {
     const project = await this.projectService.getProjectById(id);
     if (!project) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
 
-    if (project.owner_id == req.user.id) return project;
+    if (project.created_by == req.user.id) return project;
 
     // check for project access
     const projectAccess = await this.projectAccessService.getUserProjectAccess(
@@ -71,7 +71,7 @@ export class ProjectController {
       throw new HttpException('Project Not found', HttpStatus.NOT_FOUND);
 
     let canInvite;
-    if (project.owner_id == req.user.id) canInvite = true;
+    if (project.created_by == req.user.id) canInvite = true;
 
     // look for project access
     if (!canInvite) {

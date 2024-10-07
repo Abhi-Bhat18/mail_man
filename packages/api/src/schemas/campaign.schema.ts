@@ -3,11 +3,11 @@ import { ColumnType, Insertable, Selectable, Updateable } from 'kysely';
 export interface CampaignTable {
   id: string;
   name: string;
-  description: string;
   subject: string;
   mail_from: string;
-  send_later: true;
-  send_date: Date;
+  send_later: boolean;
+  scheduled_at: Date;
+  project_id: string;
   template_id: string;
   contact_list_id: string;
   status:
@@ -18,7 +18,6 @@ export interface CampaignTable {
     | 'completed'
     | 'canceled'
     | 'failed';
-  project_id: string;
   created_by: string;
   total_deliveried: number;
   total_bounces: number;

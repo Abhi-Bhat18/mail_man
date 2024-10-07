@@ -5,6 +5,7 @@ import authReducer from "./features/auth/authSlice";
 import templateReducer from "./features/email-template/emailTemplateSlice";
 
 import { userAPIs } from "./features/user/userApis";
+import { campaignAPIs } from "./features/campaign/campaignApis";
 
 export const makeStore = () => {
   return configureStore({
@@ -14,7 +15,11 @@ export const makeStore = () => {
       [api.reducerPath]: api.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authAPIs.middleware, userAPIs.middleware),
+      getDefaultMiddleware().concat(
+        authAPIs.middleware,
+        userAPIs.middleware,
+        campaignAPIs.middleware
+      ),
   });
 };
 

@@ -15,6 +15,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
         .check(sql`status IN ('draft', 'ready', 'archived', 'deprecated')`),
     )
     .addColumn('created_by', 'varchar', (col) => col.notNull())
+    .addColumn('project_id', 'varchar', (col) => col.notNull())
     .addColumn('updated_at', 'timestamp', (col) =>
       col.defaultTo(sql`now()`).notNull(),
     )

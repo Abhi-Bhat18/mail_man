@@ -32,7 +32,7 @@ export class SeedService implements OnModuleInit {
         .where('name', '=', role.name)
         .executeTakeFirst();
 
-      if (existingRole.name == 'owner') {
+      if (existingRole && existingRole.name == 'owner') {
         this.owner_id = existingRole.id;
       }
 
@@ -76,8 +76,6 @@ export class SeedService implements OnModuleInit {
         .returning('id')
         .executeTakeFirstOrThrow();
 
-      console.log('User id', user.id);
-
       this.user_id = user.id;
 
       console.log('Default user created successfully');
@@ -99,7 +97,7 @@ export class SeedService implements OnModuleInit {
           id: generateUlid(),
           name: 'Default Project',
           description: 'Default project',
-          owner_id: this.user_id,
+          created_by: this.user_id,
           status: 'active',
         })
         .returningAll()

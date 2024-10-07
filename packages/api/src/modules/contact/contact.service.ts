@@ -1,147 +1,33 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
-import { ContactListQueryDto } from './dto/contactListQuery.dto';
-import { Kysely, sql } from 'kysely';
-import { Database } from '../database/database.types';
-import { NewContactList } from '@/schemas/contact-list.schema';
-import { NewContact } from '@/schemas/contacts.schema';
-
-import * as fs from 'fs';
-import * as csv from 'csv-parse';
-import { generateUlid } from '@/utils/generators';
+import { Injectable , Logger, OnModuleInit} from "@nestjs/common";
 
 @Injectable()
-export class ContactListService implements OnModuleInit {
-  private readonly logger = new Logger(ContactListService.name);
-  private db: Kysely<Database>;
-  constructor(private dbService: DatabaseService) {}
+import { Kysely } from 'kysely';
+
+
+import {
+  Contact,
+  NewContact,
+  ContactTable,
+  ContactList,
+  ContactListTable,
+} from './types';
+import { Database } from "../database/database.types";
+import { DatabaseService } from "../database/database.service";
+import { generateUlid } from "@/utils/generators";
+
+@Injectable()
+export class ContactService implements OnModuleInit {
+  private readonly logger = new Logger(ContactService.name);
+
+  private  db : Kysely<Database>
+  constructor(
+    private readonly databaseService: DatabaseService,
+  ) {}
 
   onModuleInit() {
-    this.db = this.dbService.getDb();
-  }
-
-  async getContactLists(query: ContactListQueryDto) {
-    let { page, page_limit } = query;
-    const { project_id } = query;
-
-    page = Number(page) || 1;
-    page_limit = Number(page_limit) || 10;
-
-    return await this.db
-      .selectFrom('contact_lists as cl')
-      .where('cl.project_id', '=', project_id)
-      .leftJoin('users as u', 'u.id', 'cl.created_by')
-      .select([
-        'cl.id as id',
-        'cl.name as name',
-        'cl.email_type as email_type',
-        'cl.email_opt_in as email_opt_in',
-        'cl.status',
-        'cl.total_contacts',
-        'u.first_name',
-        'u.last_name',
-        'cl.created_by',
-        'cl.created_at',
-      ])
-      .offset((page - 1) * page_limit)
-      .limit(page_limit)
-      .execute();
-  }
-
-  async getAContactList(id: string) {
-    return await this.db
-      .selectFrom('contact_lists as cl')
-      .where('cl.id', '=', id)
-      .innerJoin('users as u', 'u.id', 'cl.created_by')
-      .select([
-        'cl.id',
-        'cl.name',
-        'cl.description',
-        'cl.total_contacts',
-        'cl.email_opt_in',
-        'cl.email_type',
-        'cl.created_by',
-        'u.first_name',
-        'u.last_name',
-        'cl.updated_at',
-        'cl.created_at',
-      ])
-      .executeTakeFirst();
-  }
-
-  async searchByName(query: string) {
-    const searchPattern = `%${query}%`;
-    return await this.db
-      .selectFrom('contact_lists')
-      .where(
-        ({ ref }) =>
-          sql<boolean>`lower(${ref('name')}) like lower(${searchPattern})`,
-      )
-      .select(['id', 'name'])
-      .execute();
-  }
-
-  async createContactList(body: NewContactList) {
-    return await this.db
-      .insertInto('contact_lists')
-      .values(body)
-      .returningAll()
-      .executeTakeFirst();
-  }
-
-  async decodeCSV(filePath: string, contact_list_id: string) {
-    try {
-      console.log('Contact list', contact_list_id);
-
-      const fileStream = fs.createReadStream(filePath);
-
-      const parser = csv.parse({
-        columns: true,
-        skip_empty_lines: true,
-        trim: true,
-      });
-      const batch: NewContact[] = [];
-
-      const processStream = new Promise((resolve, reject) => {
-        fileStream
-          .pipe(parser)
-          .on('data', async (record) => {
-            try {
-              console.log('Record', record);
-              batch.push(record);
-            } catch (error) {
-              this.logger.error(`Error processing record: ${error.message}`);
-            }
-          })
-          .on('end', async () => {
-            try {
-              if (batch.length > 0) {
-                await this.insertBatch(batch);
-              }
-              resolve(true);
-            } catch (error) {
-              reject(error);
-            }
-          })
-          .on('error', (error) => {
-            reject(error);
-          });
-      });
-
-      await processStream;
-      return batch;
-    } catch (error) {
-      this.logger.error(error);
-      throw error;
-    } finally {
-      // Cleanup: Delete the temporary file
-      try {
-        fs.unlinkSync(filePath);
-      } catch (error) {
-        this.logger.error(`Failed to delete temporary file: ${error.message}`);
-      }
-    }
-  }
+      this.db = this.databaseService.getDb()
+  };
+  
   async processCSVUpload(
     filePath: string,
     contactListId: string,
@@ -155,11 +41,11 @@ export class ContactListService implements OnModuleInit {
     let totalProcessed = 0;
     let successCount = 0;
     let errorCount = 0;
-
+    
     try {
       // First, count total lines for progress calculation
-      const totalLines = (await this.countCSVLines(filePath)) - 1; // Subtract header row
-
+      const totalLines = await this.countCSVLines(filePath) - 1; // Subtract header row
+      
       const batchSize = 1000;
       let batch: NewContact[] = [];
       let lastProgressUpdate = 0;
@@ -178,10 +64,7 @@ export class ContactListService implements OnModuleInit {
           .pipe(parser)
           .on('data', async (record) => {
             try {
-              const contact = this.createContactFromRecord(
-                record,
-                contactListId,
-              );
+              const contact = this.createContactFromRecord(record, contactListId);
               batch.push(contact);
               totalProcessed++;
 
@@ -194,9 +77,7 @@ export class ContactListService implements OnModuleInit {
               }
 
               // Update progress every 5%
-              const currentProgress = Math.floor(
-                (totalProcessed / totalLines) * 100,
-              );
+              const currentProgress = Math.floor((totalProcessed / totalLines) * 100);
               if (currentProgress > lastProgressUpdate + 5) {
                 lastProgressUpdate = currentProgress;
                 onProgress?.(currentProgress);
@@ -235,6 +116,7 @@ export class ContactListService implements OnModuleInit {
         successCount,
         errorCount,
       };
+
     } catch (error) {
       this.logger.error(`Failed to process CSV: ${error.message}`);
 
@@ -259,10 +141,7 @@ export class ContactListService implements OnModuleInit {
     });
   }
 
-  private createContactFromRecord(
-    record: any,
-    contactListId: string,
-  ): NewContact {
+  private createContactFromRecord(record: any, contactListId: string): NewContact {
     if (!record.email) {
       throw new Error('Email is required');
     }
@@ -285,9 +164,8 @@ export class ContactListService implements OnModuleInit {
       await trx
         .insertInto('contacts')
         .values(batch)
-        .onConflict((oc) =>
-          oc
-            .column('email')
+        .onConflict((oc) => 
+          oc.column('email')
             .where('contact_list_id', '=', batch[0].contact_list_id)
             .doUpdateSet({
               first_name: (eb) => eb.ref('excluded.first_name'),
@@ -295,7 +173,7 @@ export class ContactListService implements OnModuleInit {
               contact: (eb) => eb.ref('excluded.contact'),
               attributes: (eb) => eb.ref('excluded.attributes'),
               updated_at: new Date().toISOString(),
-            }),
+            })
         )
         .execute();
     });
@@ -304,7 +182,7 @@ export class ContactListService implements OnModuleInit {
   private parseAttributes(record: any): object {
     const attributes = {};
     const excludedFields = ['first_name', 'last_name', 'email', 'contact'];
-
+    
     for (const [key, value] of Object.entries(record)) {
       if (!excludedFields.includes(key)) {
         attributes[key] = value;
@@ -329,4 +207,10 @@ export class ContactListService implements OnModuleInit {
       .where('id', '=', contactListId)
       .execute();
   }
+}
+
+
+interface CSVUploadDto {
+  file: Express.Multer.File;
+  contactListId: string;
 }

@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import multer from 'multer';
 
 import { Request, Express } from 'express';
@@ -21,6 +22,7 @@ import { ProjectAccessService } from '../project-access/projectAccess.service';
 import { ContactListDto } from './dto/contactList.dto';
 import { generateUlid } from '@/utils/generators';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { EmailSearchQueryDto } from '../email-template/dto/emailTemplateQuery.dto';
 
 @Controller('contact-list')
 @UseGuards(AuthGuard)
@@ -50,11 +52,6 @@ export class ContactListController {
     return lists;
   }
 
-  @Get(':id')
-  async getAContactList(@Param('id') id: string) {
-    return await this.contactListService.getAContactList(id);
-  }
-
   @Post()
   async createContactList(@Body() body: ContactListDto, @Req() req: Request) {
     const { project_id } = body;
@@ -78,11 +75,24 @@ export class ContactListController {
     return newList;
   }
 
+  @Get('search')
+  async searchByName(@Query() query: EmailSearchQueryDto) {
+    const { search } = query;
+
+    return await this.contactListService.searchByName(search);
+  }
+
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
   async importContacts(@UploadedFile() file: Express.Multer.File) {
     console.log('File', file);
 
-    // get the data;
+    const decodedBatch = await this.contactListService.decodeCSV(file.path);
+    return decodedBatch;
+  }
+
+  @Get(':id')
+  async getAContactList(@Param('id') id: string) {
+    return await this.contactListService.getAContactList(id);
   }
 }

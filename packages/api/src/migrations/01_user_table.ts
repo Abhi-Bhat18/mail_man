@@ -9,6 +9,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('email', 'varchar', (col) => col.notNull())
     .addColumn('password', 'varchar')
     .addColumn('img_url', 'varchar')
+    .addColumn('contact', 'varchar')
     .addColumn('role_id', 'numeric', (col) => col.notNull())
     .addColumn('refresh_token', 'varchar')
     .addColumn('google_access_token', 'varchar')
