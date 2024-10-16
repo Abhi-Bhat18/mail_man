@@ -4,6 +4,7 @@ import {
   IsString,
   MinLength,
   IsDateString,
+  IsDate,
   ValidateIf,
   IsIn,
 } from 'class-validator';
@@ -37,7 +38,7 @@ export class CreateCampaignDto {
 
   // Make scheduled_date required if send_later is true
   @ValidateIf((o) => o.send_later === true)
-  @IsDateString()
+  @IsDate()
   scheduled_at?: Date;
 
   @IsIn(['draft', 'scheduled'])

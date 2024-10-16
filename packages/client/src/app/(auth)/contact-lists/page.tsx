@@ -24,8 +24,6 @@ const EmailLists = () => {
     pageLimit: 10,
   });
 
-  console.log("Data", data);
-
   return (
     <div className="space-y-5">
       <div className="flex w-full justify-between items-center border-b border-b-gray-300 pb-2">

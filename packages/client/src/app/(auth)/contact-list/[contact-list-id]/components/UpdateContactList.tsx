@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormField,
@@ -12,6 +9,7 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+
 import {
   Select,
   SelectTrigger,
@@ -19,50 +17,75 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateNewListMutation } from "@/lib/features/contact-list/contactListApis";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useAppSelector } from "@/lib/hook";
 
 const emailListSchema = z.object({
-  name: z.string().min(2, "Name must contain at least 2 characters").max(50),
+  name: z.string().min(2, "Name must contain at least 2 characters").max(50).trim(),
   description: z
     .string()
     .min(4, "Description must contain at least 4 characters")
-    .max(500),
+    .max(500).trim(),
   email_type: z.string(),
   email_opt_in: z.string(),
 });
 
-const NewListForm = () => {
+import { DialogCloseProps } from "@radix-ui/react-dialog";
+import { useAppSelector } from "@/lib/hook";
+
+interface Props {
+  DialogClose: React.ForwardRefExoticComponent<
+    DialogCloseProps & React.RefAttributes<HTMLButtonElement>
+  >;
+}
+
+const UpdateContactList: React.FC<Props> = ({ DialogClose }) => {
+  const { contactList } = useAppSelector((state) => state.contactList);
+
+  console.log("Contact List", contactList);
+
+  const router = useRouter();
   const form = useForm<z.infer<typeof emailListSchema>>({
     resolver: zodResolver(emailListSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      email_type: "private",
-      email_opt_in: "single",
+      name: contactList?.name || "",
+      description: contactList?.description || "",
+      email_type: contactList?.email_type || "private",
+      email_opt_in: contactList?.email_opt_in || "single",
     },
   });
-  // const { project_id } = useAppSelector((state) => state.auth.defaultProject);
-  const project_id = useAppSelector( state => state.auth.defaultProject?.project_id )
-  const router = useRouter();
 
-  const [createList, { data, isLoading }] = useCreateNewListMutation();
+  const formAltered = (values: z.infer<typeof emailListSchema>): boolean => {
+    if (
+      values.name !== contactList?.name ||
+      values.description !== contactList.description ||
+      values.email_opt_in !== contactList.email_opt_in ||
+      values.email_type !== contactList.email_type
+    ) {
+        console.log("Returning true");
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const onSubmit = async (values: z.infer<typeof emailListSchema>) => {
     try {
       console.log("Submitting the form");
-      const result = await createList({
-        ...values,
-        project_id: project_id,
-      }).unwrap();
+      //   const result = await createList({
+      //     ...values,
+      //     project_id: project_id,
+      //   }).unwrap();
 
       toast.success("List created successfully");
-      router.push(`/contact-lists/contact?id=${result.id}`);
+      //   router.push(`/contact-lists/contact?id=${result.id}`);
     } catch (error) {
       toast.error("Something went wrong");
     }
@@ -146,15 +169,14 @@ const NewListForm = () => {
           )}
         />
         <div className="flex space-x-5 justify-end items-center">
-          <Button type="button" variant={"secondary"}>
+          <Button disabled={!formAltered(form.getValues())} type="submit">
             {" "}
-            Cancel{" "}
+            Update{" "}
           </Button>
-          <Button type="submit"> Create </Button>
         </div>
       </form>
     </Form>
   );
 };
 
-export default NewListForm;
+export default UpdateContactList;

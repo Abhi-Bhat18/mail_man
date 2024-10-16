@@ -33,6 +33,30 @@ export const contactListAPIs = api.injectEndpoints({
         params: { search: query },
       }),
     }),
+
+    importContacts: builder.mutation({
+      query: (body) => ({
+        url: "/contact-list/import",
+        method: "POST",
+        body: body,
+      }),
+    }),
+
+    getContacts : builder.query({
+      query : ({ project_id, contact_list_id }) => ({
+        url : `/contact-list/contacts/${contact_list_id}`,
+        method : 'GET',
+        params : { project_id }
+      })
+    }),
+
+    addNewContact : builder.mutation({
+      query : (body) => ({ 
+        url : '/contact-list/contact', 
+        method : "POST", 
+        body : body
+      })
+    })
   }),
 });
 
@@ -40,5 +64,8 @@ export const {
   useCreateNewListMutation,
   useGetAllContactListsQuery,
   useGetAContactListsQuery,
-  useSearchForContactListQuery
+  useSearchForContactListQuery,
+  useImportContactsMutation,
+  useGetContactsQuery,
+  useAddNewContactMutation
 } = contactListAPIs;

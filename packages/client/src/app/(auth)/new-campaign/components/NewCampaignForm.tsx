@@ -43,7 +43,7 @@ export const campaignSchema = z.object({
   template_id: z.string().min(10),
   contact_list_id: z.string().min(10),
   send_later: z.boolean(),
-  scheduled_date: z.date().optional(),
+  scheduled_at: z.date().optional(),
 });
 
 const NewCampaignForm = () => {
@@ -174,7 +174,7 @@ const NewCampaignForm = () => {
             {sendLater && (
               <FormField
                 control={form.control}
-                name="scheduled_date"
+                name="scheduled_at"
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between">
                     <div>

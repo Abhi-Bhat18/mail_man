@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Bell, Package2, Router } from "lucide-react";
@@ -12,16 +12,25 @@ import SidebarLink from "./SidebarLink";
 import { useLogoutMutation } from "@/lib/features/auth/authApis";
 import { toast } from "sonner";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 const Sidebar = () => {
-  const [ logout, { isError , isLoading } ] = useLogoutMutation();
+  const [logout, { isError, isLoading }] = useLogoutMutation();
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
       const result = await logout(undefined).unwrap();
-      if(result) { 
+      if (result) {
         toast.success("Logged out successfully");
-        router.push('/sign-in');
+        router.push("/sign-in");
       }
     } catch (error) {
       console.log("error", error);
@@ -81,13 +90,23 @@ const Sidebar = () => {
               />
             );
           })}
-          <button
-            onClick={handleLogout}
-            className="w-full flex justify-start space-x-2 text-muted-foreground hover:text-primary px-3 py-2 items-center"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
-          </button>
+
+          <Dialog>
+            <DialogTrigger>
+              <button className="w-full flex justify-start space-x-2 text-muted-foreground hover:text-primary px-3 py-2 items-center">
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Are you absolutely sure?</DialogTitle>
+                <DialogDescription className="flex justify-end">
+                  <Button onClick={handleLogout}>Logout</Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

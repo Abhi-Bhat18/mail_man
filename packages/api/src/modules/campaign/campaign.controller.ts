@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Query,
@@ -13,11 +14,15 @@ import { Request } from 'express';
 import { generateUlid } from '@/utils/generators';
 import { AuthGuard } from '../auth/auth.guard';
 import { queryDto } from '@/utils/queryDto';
+import { EmailService } from '../email/email.service';
 
 @Controller('campaign')
 @UseGuards(AuthGuard)
 export class CampaignController {
-  constructor(private campaignService: CampaignService) {}
+  constructor(
+    private campaignService: CampaignService,
+    private emailService: EmailService,
+  ) {}
 
   @Get()
   async getAllCampaign(@Query() query: queryDto) {
@@ -33,5 +38,12 @@ export class CampaignController {
       created_by: req.user.id,
       scheduled_at: new Date(),
     });
+  }
+
+  @Delete('')
+  async deleteCampaigns() {
+    const emails = await this.emailService.deleteEmails();
+    const campaigns = await this.campaignService.deleteCampaigns();
+    return { emails, campaigns };
   }
 }

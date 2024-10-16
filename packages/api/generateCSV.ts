@@ -3,17 +3,17 @@ import { createObjectCsvWriter } from 'csv-writer';
 
 // Define the CSV writer
 const csvWriter = createObjectCsvWriter({
-  path: 'contacts.csv',
+  path: 'contacts2.csv',
   header: [
-    { id: 'first_name', title: 'First Name' },
-    { id: 'last_name', title: 'Last Name' },
-    { id: 'email', title: 'Email' },
-    { id: 'contact', title: 'Contact' },
-    { id: 'attributes', title: 'Attributes' },
-    { id: 'opt_in', title: 'Opt In' },
-    { id: 'unsubscribed', title: 'Unsubscribed' },
-    { id: 'updated_at', title: 'Updated At' },
-    { id: 'created_at', title: 'Created At' },
+    { id: 'first_name', title: 'first_name' },
+    { id: 'last_name', title: 'last_name' },
+    { id: 'email', title: 'email' },
+    { id: 'contact', title: 'contact' },
+    { id: 'attributes', title: 'attributes' },
+    { id: 'opt_in', title: 'opt_in' },
+    { id: 'unsubscribed', title: 'unsubscribed' },
+    { id: 'updated_at', title: 'updated_at' },
+    { id: 'created_at', title: 'created_at' },
   ],
 });
 
@@ -34,7 +34,7 @@ const generateContactData = () => ({
 });
 
 // Generate 200 rows of data
-const contacts = Array.from({ length: 5 }, generateContactData);
+const contacts = Array.from({ length: 100 }, generateContactData);
 
 // Write the data to CSV file
 csvWriter

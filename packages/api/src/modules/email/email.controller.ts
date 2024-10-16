@@ -18,9 +18,9 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @Get()
-  emailCheck() {
-    // const mailInfo = await this.emailService.sendEmail();
-    return 'Email Check';
+  async emailCheck() {
+    const mailInfo = await this.emailService.sendTestEmail();
+    return mailInfo;
   }
 
   @Post()
@@ -29,9 +29,7 @@ export class EmailController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const { to, subject, content, html } = body;
-
-    const info = await this.emailService.sendEmail(to, subject, content, html);
+    const info = await this.emailService.sendTestEmail()
 
     res.json({ info: info });
   }

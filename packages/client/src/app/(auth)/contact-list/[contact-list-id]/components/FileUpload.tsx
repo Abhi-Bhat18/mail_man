@@ -1,12 +1,27 @@
 "use client";
-import React, { useState } from "react";
+import {
+  FormField,
+  FormControl,
+  FormLabel,
+  FormItem,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import React, { useState, useRef } from "react";
 
 // Define the props type
 interface FileUploadProps {
-    form : 
+  name: string;
+  label: string;
+  placeHolder: string;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
+const FileUpload: React.FC<FileUploadProps> = ({
+  name,
+  label,
+  placeHolder,
+}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -44,32 +59,40 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
 
     setSelectedFile(file);
     setError("");
-    onFileSelect(file);
   };
 
   return (
     <div
       onDrop={handleDrop}
+      onClick={() => {
+        inputRef.current?.click(); // Trigger file input click
+      }}
       onDragOver={(e) => e.preventDefault()}
-      className="w-full bg-card border-dashed rounded-lg border flex justify-center items-center"
+      className="w-full bg-card border-dashed rounded-lg border flex justify-center items-center h-[200px] cursor-pointer"
     >
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileSelect}
-        className="hidden"
-        id="fileUpload"
+      <FormField
+        name={name}
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel className="w-full h-full cursor-pointer">
+                {label}
+              </FormLabel>
+              <FormControl>
+                {/* Ensure file selection works */}
+                <Input
+                  type="file" 
+                  accept=".csv" 
+                  className="hidden"
+                  {...field}
+                  ref={inputRef} 
+                  onChange={handleFileSelect}
+                />
+              </FormControl>
+            </FormItem>
+          );
+        }}
       />
-      <label
-        htmlFor="fileUpload"
-        className="cursor-pointer w-full h-[250px] flex flex-col justify-center items-center"
-      >
-        <p className="-mt-5">
-          Drag and drop a CSV file here, or click to select a file
-        </p>
-        {selectedFile && <p>Selected file: {selectedFile.name}</p>}
-        {/* {error && <p className="text-red-500">{error}</p>} */}
-      </label>
     </div>
   );
 };

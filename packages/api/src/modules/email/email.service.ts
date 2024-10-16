@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { DatabaseService } from '../database/database.service';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
-
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
@@ -12,20 +9,17 @@ export class EmailService {
   private db: Kysely<Database>;
   private transporter: nodemailer.Transporter;
 
-  constructor(
-    private readonly dbService: DatabaseService,
-    @InjectQueue('email') private emailQueue: Queue,
-  ) {}
+  constructor(private readonly dbService: DatabaseService) {}
 
   onModuleInit() {
     this.db = this.dbService.getDb();
     this.transporter = nodemailer.createTransport({
-      host: 'localhost',
+      host: '212.47.72.43',
       port: 587,
-      secure: false, // Use STARTTLS
+      secure: false,
       auth: {
-        user: 'abhishekbhat.dev@gmail.com',
-        pass: 'password1',
+        user: 'mail@abhishekbhat.com',
+        pass: 'Abhishek196927',
       },
       tls: {
         rejectUnauthorized: false,
@@ -38,23 +32,32 @@ export class EmailService {
     subject: string,
     text: string,
     html: string,
+    mail_from: string,
   ) => {
     const mailOptions = {
-      from: 'abhishekbhat.dev@gmail.com',
+      from: mail_from,
       to,
       subject,
       text,
       html,
     };
 
-    try {
-      const job = await this.emailQueue.add('email', {
-        mailOptions,
-      });
-      return { success: true, message: 'Email queued successfully', job };
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw error;
-    }
+    const info = await this.transporter.sendMail(mailOptions);
+    return info;
   };
+
+  async sendTestEmail() {
+    const info = await this.transporter.sendMail({
+      from: '"Abhishek Bhat" <mail@abhishekbhat.com>',
+      to: 'abhibhat@mailinator.com,abhishekbhat.dev@gmail.com',
+      subject: 'SMTP Server Test2',
+      html: '<b>Smtp server testing 2</b>',
+    });
+
+    return info;
+  }
+
+  async deleteEmails() {
+    return this.db.deleteFrom('emails').returning('id').execute();
+  }
 }

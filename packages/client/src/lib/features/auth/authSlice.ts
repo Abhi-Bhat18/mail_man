@@ -23,6 +23,7 @@ interface IinitialState {
   } | null;
   isLoggedIn: boolean;
 }
+
 const initialState: IinitialState = {
   user: null,
   defaultProject: null,
@@ -32,7 +33,6 @@ const initialState: IinitialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
-
   reducers: {},
   extraReducers(builder) {
     builder.addMatcher(
@@ -51,7 +51,7 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
       }
     );
-    
+
     builder.addMatcher(
         userAPIs.endpoints.updateProfile.matchFulfilled,
         (state, action) => { 

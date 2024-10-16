@@ -1,4 +1,4 @@
-import { ColumnType, Selectable } from 'kysely';
+import { ColumnType, Insertable, Selectable } from 'kysely';
 
 export interface ContactListMembershipTable {
   contact_id: string;
@@ -6,4 +6,5 @@ export interface ContactListMembershipTable {
   added_at: ColumnType<Date, string, never>;
 }
 
-export type ContactListMembership = Selectable<ContactListMembershipTable>;
+export type contactListMembership = Selectable<ContactListMembershipTable>;
+export type NewContactListJunction = Insertable<ContactListMembershipTable>;
