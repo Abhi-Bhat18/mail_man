@@ -11,10 +11,9 @@ export const campaignAPIs = api.injectEndpoints({
     }),
 
     getACampaign: builder.query({
-      query: ({ project_id, campaign_id }) => ({
+      query: ({ campaign_id }) => ({
         url: `/campaign/${campaign_id}`,
         method: "GET",
-        params: { project_id },
       }),
     }),
 

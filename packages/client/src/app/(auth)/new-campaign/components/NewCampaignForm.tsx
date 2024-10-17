@@ -7,6 +7,8 @@ import { z } from "zod";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { useRouter } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import { X } from "lucide-react";
 
 import {
   Form,
@@ -82,10 +84,32 @@ const NewCampaignForm = () => {
 
       toast.success("Campaign created successfully");
 
-      router.push(`/campaign/${result.id}`)
-
+      router.push(`/campaign/${result.id}`);
     } catch (error) {
       toast.error("Something went wrong");
+    }
+  };
+
+  const [email, setEmail] = useState<string>("");
+  const [emailTags, setEmailTags] = useState<string[]>([]);
+  const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleAddEmail = () => {
+    if (email && !emailTags.includes(email)) {
+      setEmailTags([...emailTags, email]);
+      setEmail(""); // Clear the input after adding
+      setIsButtonEnabled(true);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddEmail();
     }
   };
 
@@ -248,7 +272,32 @@ const NewCampaignForm = () => {
       </div>
 
       <div className="basis-5/12">
-        <SendTestEmail />
+        <Card className="border-none p-5 space-y-5">
+          <p>Send Test Email</p>
+          <Input
+            type="email"
+            value={email}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown} // Add email on "Enter" key press
+            placeholder="Enter email and press Enter"
+          />
+          <div className="flex flex-wrap items-center">
+            {emailTags.map((tag, index) => (
+              <div
+                key={index}
+                className="bg-background px-2 py-1 rounded-md flex space-x-2 w-fit m-2"
+              >
+                <p>{tag}</p>
+                <span className="cursor-pointer">
+                  <X className="h-3 w-3" />
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="w-full flex justify-end">
+            <Button disabled={emailTags.length == 0}>Send</Button>
+          </div>
+        </Card>
       </div>
     </div>
   );

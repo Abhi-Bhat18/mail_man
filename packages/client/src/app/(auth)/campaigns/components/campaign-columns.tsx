@@ -51,7 +51,7 @@ export const campaignColumns: ColumnDef<Campaign>[] = [
     cell: ({ row }) => {
       const { first_name, last_name, created_by } = row.original;
       return (
-        <Link href={`/profile/${created_by}`}> {first_name + last_name} </Link>
+        <Link href={`/profile/${created_by}`}> {first_name + ' ' + last_name} </Link>
       );
     },
   },

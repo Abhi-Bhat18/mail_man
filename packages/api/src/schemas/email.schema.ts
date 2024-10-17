@@ -4,7 +4,7 @@ export interface EmailTable {
   id: string;
   campaign_id: string;
   email: string;
-  status: 'sent' | 'rejected' | 'soft-bounce' | 'hard-bounce';
+  status: 'sent' | 'failed' | 'rejected' | 'soft-bounce' | 'hard-bounce';
   updated_at: ColumnType<Date, string, any>;
   created_at: ColumnType<Date, string | undefined, never>;
 }

@@ -1,6 +1,12 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  Logger,
+  Inject,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-
+import { ClientProxy } from '@nestjs/microservices';
 import { DatabaseService } from '../database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
@@ -9,6 +15,8 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from '../email/email.service';
 import { NewEmail } from '@/schemas/email.schema';
 import { generateUlid } from '@/utils/generators';
+import { CreateCampaignDto } from './dto/newCampaign.dto';
+import { EmailTemplateService } from '../email-template/emailTemplate.service';
 
 interface IBatchCampaign {
   id: string;
@@ -31,9 +39,10 @@ export class CampaignService implements OnModuleInit {
     private databaseService: DatabaseService,
     private emailService: EmailService,
     private configService: ConfigService,
+    private templateService: EmailTemplateService,
   ) {}
 
-  onModuleInit() {
+  async onModuleInit() {
     this.db = this.databaseService.getDb();
   }
 
@@ -52,6 +61,46 @@ export class CampaignService implements OnModuleInit {
     } finally {
       this.isProcessing = false;
     }
+  }
+  async getAllCampaigns(project_id: string) {
+    return await this.db
+      .selectFrom('campaigns as c')
+      .where('c.project_id', '=', project_id)
+      .leftJoin('users as u', 'u.id', 'c.created_by')
+      .leftJoin('contact_lists as cl', 'cl.id', 'c.contact_list_id')
+      .leftJoin('email_templates as et', 'et.id', 'c.template_id')
+      .select([
+        'c.name',
+        'c.id',
+        'c.subject',
+        'c.mail_from',
+        'u.first_name',
+        'u.last_name',
+        'c.created_by',
+        'et.name as template_name',
+        'c.template_id',
+        'c.contact_list_id',
+        'cl.name as contact_list_name',
+        'c.scheduled_at',
+        'c.status',
+      ])
+      .execute();
+  }
+
+  async createCampaign(values: NewCampaign) {
+    return await this.db
+      .insertInto('campaigns')
+      .values(values)
+      .returningAll()
+      .executeTakeFirst();
+  }
+
+  async getACampaign(id: string) {
+    return await this.db
+      .selectFrom('campaigns')
+      .where('id', '=', id)
+      .selectAll()
+      .executeTakeFirst();
   }
 
   private async processScheduledCampaigns() {
@@ -107,10 +156,6 @@ export class CampaignService implements OnModuleInit {
         }
 
         await this.processBatch(batch, campaign);
-        // await Promise.all(
-        //   batch.map((batch) => this.processBatch(batch, campaign)),
-        // );
-
         processed += batch.length;
 
         this.logger.debug(
@@ -161,8 +206,6 @@ export class CampaignService implements OnModuleInit {
       ),
     );
 
-    console.log('Results', results);
-
     const updatePromises = results.map((result, index) => {
       const contact = batch[index];
 
@@ -178,7 +221,7 @@ export class CampaignService implements OnModuleInit {
           id: generateUlid(),
           campaign_id: campaign.id,
           email: contact.email,
-          status: 'rejected',
+          status: 'failed',
         });
       }
     });
@@ -199,51 +242,27 @@ export class CampaignService implements OnModuleInit {
     );
   }
 
+  async sendTestCampaignEmail(body: CreateCampaignDto, email: string) {
+    // get the template and mailfrom
+    const { mail_from, subject, template_id } = body;
+
+    // get the tempalte
+    const template = await this.templateService.getATemplateById(template_id);
+
+    if (!template) throw new NotFoundException();
+
+    // send the email
+    const info = await this.emailService.sendEmail(
+      'to',
+      subject,
+      '',
+      template.html,
+      email,
+    );
+  }
+
   private async createEmailRecord(emailRecord: NewEmail) {
     await this.db.insertInto('emails').values(emailRecord).execute();
-  }
-
-  private chunkArray<T>(array: T[], size: number): T[][] {
-    const chunks = [];
-
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
-    }
-
-    return chunks;
-  }
-
-  async getAllCampaigns(project_id: string) {
-    return await this.db
-      .selectFrom('campaigns as c')
-      .where('c.project_id', '=', project_id)
-      .leftJoin('users as u', 'u.id', 'c.created_by')
-      .leftJoin('contact_lists as cl', 'cl.id', 'c.contact_list_id')
-      .leftJoin('email_templates as et', 'et.id', 'c.template_id')
-      .select([
-        'c.name',
-        'c.id',
-        'c.subject',
-        'c.mail_from',
-        'u.first_name',
-        'u.last_name',
-        'c.created_by',
-        'et.name as template_name',
-        'c.template_id',
-        'c.contact_list_id',
-        'cl.name as contact_list_name',
-        'c.scheduled_at',
-        'c.status',
-      ])
-      .execute();
-  }
-
-  async createCampaign(values: NewCampaign) {
-    return await this.db
-      .insertInto('campaigns')
-      .values(values)
-      .returningAll()
-      .executeTakeFirst();
   }
 
   async deleteCampaigns() {

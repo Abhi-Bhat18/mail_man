@@ -1,7 +1,7 @@
-'use client'
+"use client";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { z } from 'zod';
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -12,22 +12,31 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-const passwordSchema = z.object({ 
-  current_password : z.string().min(8),
-  new_password : z.string().min(8),
-  confirm_password : z.string().min(8)
-});
-
-
+const passwordSchema = z
+  .object({
+    current_password: z
+      .string()
+      .min(8, { message: "Current password must be at least 8 characters" }),
+    new_password: z
+      .string()
+      .min(8, { message: "New password must be at least 8 characters" }),
+    confirm_password: z
+      .string()
+      .min(8, { message: "Confirm password must be at least 8 characters" }),
+  })
+  .refine((data) => data.new_password === data.confirm_password, {
+    message: "Passwords must match",
+    path: ["confirm_password"], // Specify where the error should appear
+  });
 
 const Password = () => {
   const form = useForm<z.infer<typeof passwordSchema>>({
-    resolver : zodResolver(passwordSchema),
-    defaultValues :{ 
-      current_password : '',
-      new_password : '',
-      confirm_password :'',
-    }
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      current_password: "",
+      new_password: "",
+      confirm_password: "",
+    },
   });
 
   return (

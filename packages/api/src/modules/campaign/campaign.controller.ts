@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -30,6 +31,11 @@ export class CampaignController {
     return await this.campaignService.getAllCampaigns(project_id);
   }
 
+  @Get(':id')
+  async getACampaign(@Param('id') id: string) {
+    return await this.campaignService.getACampaign(id);
+  }
+
   @Post()
   async createCampaign(@Body() body: CreateCampaignDto, @Req() req: Request) {
     return await this.campaignService.createCampaign({
@@ -38,6 +44,15 @@ export class CampaignController {
       created_by: req.user.id,
       scheduled_at: new Date(),
     });
+  }
+
+  @Post()
+  async sendTestCampaignEmail(
+    @Body() body: CreateCampaignDto,
+    @Req() req: Request,
+  ) {
+    const { email } = req.user;
+    return await this.campaignService.sendTestCampaignEmail(body, email);
   }
 
   @Delete('')

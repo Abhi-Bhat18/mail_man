@@ -4,9 +4,10 @@ import { EmailController } from './email.controller';
 import { DatabaseModule } from '../database/database.module';
 
 import { EmailConsumer } from './email.processor';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, ConfigModule],
   controllers: [EmailController],
   providers: [EmailService, EmailConsumer],
   exports: [EmailService],

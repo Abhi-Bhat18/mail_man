@@ -3,28 +3,38 @@ import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { DatabaseService } from '../database/database.service';
 import * as nodemailer from 'nodemailer';
+import { EventPattern } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
   private db: Kysely<Database>;
   private transporter: nodemailer.Transporter;
 
-  constructor(private readonly dbService: DatabaseService) {}
+  constructor(
+    private readonly dbService: DatabaseService,
+    private readonly configService: ConfigService,
+  ) {}
 
   onModuleInit() {
     this.db = this.dbService.getDb();
     this.transporter = nodemailer.createTransport({
-      host: '212.47.72.43',
-      port: 587,
+      host: this.configService.get('MAIL_HOST'),
+      port: this.configService.get('MAIL_PORT'),
       secure: false,
       auth: {
-        user: 'mail@abhishekbhat.com',
-        pass: 'Abhishek196927',
+        user: this.configService.get('MAIL_USER'),
+        pass: this.configService.get('MAIL_PASS'),
       },
       tls: {
         rejectUnauthorized: false,
       },
     });
+  }
+
+  @EventPattern('my_queue')
+  async handleMessage(data: any) {
+    console.log('Data', data);
   }
 
   sendEmail = async (

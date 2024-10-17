@@ -66,7 +66,7 @@ export class AuthServices {
 
     if (!user) throw new NotFoundException();
 
-    // match the password
+    // compare the password
     const correctPassword = await bcrypt.compare(password, user.password);
 
     if (!correctPassword)

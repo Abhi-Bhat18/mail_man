@@ -1,8 +1,15 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { DatabaseService } from 'src/modules/database/database.service';
 import { Kysely } from 'kysely';
 import { Database } from '../database/database.types';
 import { NewUser, UserUpdate } from 'src/schemas/user.schema';
+import { UpdatePasswordDto } from './dto/updatePassword.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -13,8 +20,6 @@ export class UserService implements OnModuleInit {
   onModuleInit() {
     this.db = this.dbService.getDb();
   }
-
-  async seed() {}
 
   findById = async (id: string) => {
     return await this.db
@@ -86,5 +91,37 @@ export class UserService implements OnModuleInit {
       .set({ refresh_token: null })
       .where('id', '=', id)
       .executeTakeFirst();
+  };
+
+  updatePassword = async (body: UpdatePasswordDto, id: string) => {
+    const { current_password, new_password, confirm_password } = body;
+    if (new_password !== confirm_password)
+      throw new HttpException(
+        'New password and confirm password should match',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    const user = await this.findById(id);
+
+    const isPasswordCorrect = await bcrypt.compare(
+      current_password,
+      user.password,
+    );
+
+    if (!isPasswordCorrect)
+      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(new_password, salt);
+
+    if (hashedPassword == user.password)
+      throw new HttpException(
+        'New password can not be same as current password',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    await this.findByIdAndUpdate(id, {
+      password: hashedPassword,
+    });
   };
 }

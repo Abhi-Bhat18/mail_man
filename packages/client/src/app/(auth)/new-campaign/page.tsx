@@ -4,8 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NewCampaignForm from "./components/NewCampaignForm";
 
 const NewCampaign = () => {
- 
-
   return (
     <div className="space-y-5">
       <div>
@@ -17,9 +15,9 @@ const NewCampaign = () => {
           <TabsTrigger value="content">Content</TabsTrigger>
         </TabsList>
         <TabsContent value="campaign">
-            <NewCampaignForm/>
+          <NewCampaignForm />
         </TabsContent>
-        <TabsContent value="content">Change your password here.</TabsContent>
+        <TabsContent value="content">Preview your Mail Template</TabsContent>
       </Tabs>
     </div>
   );

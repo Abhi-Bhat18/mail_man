@@ -17,6 +17,7 @@ import { ContactListModule } from './modules/contact-list/contactList.module';
 import { EmailTemplateModule } from './modules/email-template/emaliTemplate.module';
 import { CampaignModule } from './modules/campaign/campaign.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   // configuringing the env variables
@@ -38,10 +39,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     RoleModule,
     CommandRunnerModule,
     EmailTemplateModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
